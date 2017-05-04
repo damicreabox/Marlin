@@ -61,20 +61,20 @@ The current Marlin dev team consists of:
  - Bernhard Kubicek [[@bkubicek](https://github.com/bkubicek)]
 
 More features have been added by:
- - Alberto Cotronei [[@MagoKimbra](https://github.com/MagoKimbra)] - English, Italian
- - Thomas Moore [[@tcm0116](https://github.com/tcm0116)]
- - Ernesto Martinez [[@emartinez167](https://github.com/emartinez167)]
- - Petr Zahradnik [[@clexpert](https://github.com/clexpert)]
- - Kai [[@Kaibob2](https://github.com/Kaibob2)]
- - Edward Patel [[@epatel](https://github.com/epatel)]
- - F. Malpartida [[@fmalpartida](https://github.com/fmalpartida)] - English, Spanish
- - [[@esenapaj](https://github.com/esenapaj)] - English, Japanese
- - [[@benlye](https://github.com/benlye)]
- - [[@Tannoo](https://github.com/Tannoo)]
- - [[@teemuatlut](https://github.com/teemuatlut)]
- - [[@bgort](https://github.com/bgort)]
- - [[@LVD-AC](https://github.com/LVD-AC)]
- - [[@paulusjacobus](https://github.com/paulusjacobus)]
+ - Alberto Cotronei [@MagoKimbra] - English, Italian
+ - Thomas Moore [@tcm0116]
+ - Ernesto Martinez [@emartinez167]
+ - Petr Zahradnik [@clexpert]
+ - Kai [@Kaibob2]
+ - Edward Patel [@epatel]
+ - F. Malpartida [@fmalpartida] - English, Spanish
+ - [@esenapaj] - English, Japanese
+ - [@benlye]
+ - [@Tannoo]
+ - [@teemuatlut]
+ - [@bgort]
+ - [@LVD-AC]
+ - [@paulusjacobus]
  - ...and many others
 
 ## License

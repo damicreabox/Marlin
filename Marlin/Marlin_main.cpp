@@ -1323,6 +1323,8 @@ inline bool code_value_bool() { return !code_has_value() || code_value_byte() > 
     }
   }
 
+  int16_t code_value_temp_abs() { return temp_abs(code_value_float()); }
+
   int16_t code_value_temp_diff() {
     switch (input_temp_units) {
       case TEMPUNIT_F:

@@ -3945,7 +3945,7 @@ void home_all_axes() { gcode_G28(true); }
 #if ENABLED(MESH_BED_LEVELING)
 
   // Save 130 bytes with non-duplication of PSTR
-  void say_not_entered() { SERIAL_PROTOCOLLNPGM(" not entered."); }
+  void echo_not_entered() { SERIAL_PROTOCOLLNPGM(" not entered."); }
 
   void mbl_mesh_report() {
     SERIAL_PROTOCOLLNPGM("Num X,Y: " STRINGIFY(GRID_MAX_POINTS_X) "," STRINGIFY(GRID_MAX_POINTS_Y));
@@ -4076,7 +4076,7 @@ void home_all_axes() { gcode_G28(true); }
           }
         }
         else {
-          SERIAL_CHAR('X'); say_not_entered();
+          SERIAL_CHAR('X'); echo_not_entered();
           return;
         }
 
@@ -4088,7 +4088,7 @@ void home_all_axes() { gcode_G28(true); }
           }
         }
         else {
-          SERIAL_CHAR('Y'); say_not_entered();
+          SERIAL_CHAR('Y'); echo_not_entered();
           return;
         }
 
@@ -4096,7 +4096,7 @@ void home_all_axes() { gcode_G28(true); }
           mbl.z_values[px][py] = code_value_linear_units();
         }
         else {
-          SERIAL_CHAR('Z'); say_not_entered();
+          SERIAL_CHAR('Z'); echo_not_entered();
           return;
         }
         break;
@@ -4106,7 +4106,7 @@ void home_all_axes() { gcode_G28(true); }
           mbl.z_offset = code_value_linear_units();
         }
         else {
-          SERIAL_CHAR('Z'); say_not_entered();
+          SERIAL_CHAR('Z'); echo_not_entered();
           return;
         }
         break;

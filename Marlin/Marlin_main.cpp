@@ -138,7 +138,7 @@
  * M140 - Set bed target temp. S<temp>
  * M145 - Set heatup values for materials on the LCD. H<hotend> B<bed> F<fan speed> for S<material> (0=PLA, 1=ABS)
  * M149 - Set temperature units. (Requires TEMPERATURE_UNITS_SUPPORT)
- * M150 - Set Status LED Color as R<red> U<green> B<blue>. Values 0-255. (Requires BLINKM or RGB_LED)
+ * M150 - Set Status LED Color as R<red> U<green> B<blue>. Values 0-255. (Requires BLINKM, RGB_LED, RGBW_LED, or PCA9632)
  * M155 - Auto-report temperatures with interval of S<seconds>. (Requires AUTO_REPORT_TEMPERATURES)
  * M163 - Set a single proportion for a mixing extruder. (Requires MIXING_EXTRUDER)
  * M164 - Save the mix as a virtual extruder. (Requires MIXING_EXTRUDER and MIXING_VIRTUAL_TOOLS)
@@ -278,6 +278,10 @@
 #if ENABLED(BLINKM)
   #include "blinkm.h"
   #include "Wire.h"
+#endif
+
+#if ENABLED(PCA9632)
+  #include "pca9632.h"
 #endif
 
 #if HAS_SERVOS
@@ -988,7 +992,9 @@ void servo_init() {
       // This variant uses i2c to send the RGB components to the device.
       SendColors(r, g, b);
 
-    #else
+    #endif
+
+    #if ENABLED(RGB_LED) || ENABLED(RGBW_LED)
 
       // This variant uses 3 separate pins for the RGB components.
       // If the pins can do PWM then their intensity will be set.
@@ -1004,6 +1010,11 @@ void servo_init() {
         analogWrite(RGB_LED_W_PIN, w);
       #endif
 
+    #endif
+
+    #if ENABLED(PCA9632)
+      // Update I2C LED driver
+      PCA9632_SetColor(r, g, b);
     #endif
   }
 
@@ -8127,7 +8138,7 @@ inline void gcode_M121() { endstops.enable_globally(false); }
     );
   }
 
-#endif // BLINKM || RGB_LED
+#endif // HAS_COLOR_LEDS
 
 /**
  * M200: Set filament diameter and set E axis units to cubic units
@@ -10740,7 +10751,7 @@ void process_next_command() {
           gcode_M150();
           break;
 
-      #endif // BLINKM
+      #endif // HAS_COLOR_LEDS
 
       #if ENABLED(MIXING_EXTRUDER)
         case 163: // M163: Set a component weight for mixing extruder

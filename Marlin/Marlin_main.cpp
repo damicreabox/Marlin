@@ -3641,6 +3641,14 @@ inline void gcode_G4() {
   inline void gcode_G5() {
     if (IsRunning()) {
 
+      #if ENABLED(CNC_WORKSPACE_PLANES)
+        if (workspace_plane != PLANE_XY) {
+          SERIAL_ERROR_START();
+          SERIAL_ERRORLNPGM(MSG_ERR_BAD_PLANE_MODE);
+          return;
+        }
+      #endif
+
       gcode_get_destination();
 
       const float offset[] = {
@@ -12697,7 +12705,7 @@ void prepare_move_to_destination() {
     millis_t next_idle_ms = millis() + 200UL;
 
     #if N_ARC_CORRECTION > 1
-      int8_t count = N_ARC_CORRECTION;
+      int8_t arc_recalc_count = N_ARC_CORRECTION;
     #endif
 
     for (uint16_t i = 1; i < segments; i++) { // Iterate (segments-1) times
@@ -12709,7 +12717,7 @@ void prepare_move_to_destination() {
       }
 
       #if N_ARC_CORRECTION > 1
-        if (--count) {
+        if (--arc_recalc_count) {
           // Apply vector rotation matrix to previous r_P / 1
           const float r_new_Y = r_P * sin_T + r_Q * cos_T;
           r_P = r_P * cos_T - r_Q * sin_T;
@@ -12719,7 +12727,7 @@ void prepare_move_to_destination() {
       #endif
       {
         #if N_ARC_CORRECTION > 1
-          count = N_ARC_CORRECTION;
+          arc_recalc_count = N_ARC_CORRECTION;
         #endif
 
         // Arc correction to radius vector. Computed only every N_ARC_CORRECTION increments.
@@ -12749,8 +12757,9 @@ void prepare_move_to_destination() {
     // motion control system might still be processing the action and the real tool position
     // in any intermediate location.
     set_current_to_destination();
-  }
-#endif
+  } // plan_arc
+
+#endif // ARC_SUPPORT
 
 #if ENABLED(BEZIER_CURVE_SUPPORT)
 

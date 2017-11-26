@@ -464,7 +464,7 @@
 //#define LCD_DECIMAL_SMALL_XY
 
 // The timeout (in ms) to return to the status screen from sub-menus
-#define LCD_TIMEOUT_TO_STATUS 15000
+#define LCD_TIMEOUT_TO_STATUS 30000
 
 #if ENABLED(SDSUPPORT)
 
@@ -528,7 +528,7 @@
     // Amount of time (ms) to show the status message
     #define PROGRESS_BAR_MSG_TIME 3000
     // Amount of time (ms) to retain the status message (0=forever)
-    #define PROGRESS_MSG_EXPIRE   0
+    #define PROGRESS_MSG_EXPIRE   60
     // Enable this to show messages for MSG_TIME then hide them
     //#define PROGRESS_MSG_ONCE
     // Add a menu item to test the progress bar:
@@ -562,7 +562,7 @@
   #define XYZ_HOLLOW_FRAME
 
   // Enable to save many cycles by drawing a hollow frame on Menu Screens
-  // #define MENU_HOLLOW_FRAME
+  #define MENU_HOLLOW_FRAME
 
   // A bigger font is available for edit items. Costs 3120 bytes of PROGMEM.
   // Western only. Not available for Cyrillic, Kana, Turkish, Greek, or Chinese.
@@ -603,12 +603,12 @@
 #if ENABLED(BABYSTEPPING)
   //#define BABYSTEP_XY              // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false    // Change if Z babysteps should go the other way
-  #define BABYSTEP_MULTIPLICATOR 100 // Babysteps are very small. Increase for faster motion.
+  #define BABYSTEP_MULTIPLICATOR 10 // Babysteps are very small. Increase for faster motion.
   #define BABYSTEP_ZPROBE_OFFSET   // Enable to combine M851 and Babystepping
   #define DOUBLECLICK_FOR_Z_BABYSTEPPING // Double-click on the Status Screen for Z Babystepping.
   #define DOUBLECLICK_MAX_INTERVAL 1250 // Maximum interval between clicks, in milliseconds.
                                         // Note: Extra time may be added to mitigate controller latency.
-  //#define BABYSTEP_ZPROBE_GFX_OVERLAY // Enable graphical overlay on Z-offset editor
+  #define BABYSTEP_ZPROBE_GFX_OVERLAY // Enable graphical overlay on Z-offset editor
   //#define BABYSTEP_ZPROBE_GFX_REVERSE // Reverses the direction of the CW/CCW indicators
 #endif
 
@@ -844,8 +844,8 @@
   #define FILAMENT_CHANGE_NUMBER_OF_ALERT_BEEPS 5 // Number of alert beeps before printer goes quiet
   #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable to have stepper motors hold position during filament change
                                               // even if it takes longer than DEFAULT_STEPPER_DEACTIVE_TIME.
-  //#define PARK_HEAD_ON_PAUSE                // Go to filament change position on pause, return to print position on resume
-  //#define HOME_BEFORE_FILAMENT_CHANGE       // Ensure homing has been completed prior to parking for filament change
+  #define PARK_HEAD_ON_PAUSE                // Go to filament change position on pause, return to print position on resume
+  #define HOME_BEFORE_FILAMENT_CHANGE       // Ensure homing has been completed prior to parking for filament change
 #endif
 
 // @section tmc
@@ -1282,24 +1282,24 @@
  */
 //#define CUSTOM_USER_MENUS
 #if ENABLED(CUSTOM_USER_MENUS)
-  #define USER_SCRIPT_DONE "M117 User Script Done"
+  #define USER_SCRIPT_DONE "M117 Commande perso exécutée"
   #define USER_SCRIPT_AUDIBLE_FEEDBACK
   //#define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  //#define USER_DESC_1 "Refroidir"
+  //#define USER_GCODE_1 "M140 S0\nM104 S0"
 
-  #define USER_DESC_2 "Preheat for PLA"
-  #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  //#define USER_DESC_2 "Preheat for PLA"
+  //#define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
 
-  #define USER_DESC_3 "Preheat for ABS"
-  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  //#define USER_DESC_3 "Preheat for ABS"
+  //#define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
 
-  #define USER_DESC_4 "Heat Bed/Home/Level"
-  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
+  //#define USER_DESC_4 "Heat Bed/Home/Level"
+  //#define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
 
-  #define USER_DESC_5 "Home & Info"
-  #define USER_GCODE_5 "G28\nM503"
+  //#define USER_DESC_5 "Home & Info"
+  //#define USER_GCODE_5 "G28\nM503"
 #endif
 
 /**

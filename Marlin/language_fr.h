@@ -146,7 +146,7 @@
 #define MSG_MOVE_01MM                       _UxGT("Dépl. 0.1mm")
 #define MSG_MOVE_1MM                        _UxGT("Dépl. 1mm")
 #define MSG_MOVE_10MM                       _UxGT("Dépl. 10mm")
-#define MSG_SPEED                           _UxGT(" Vitesse")
+#define MSG_SPEED                           _UxGT("Vitesse")
 #define MSG_BED_Z                           _UxGT("Lit Z")
 #define MSG_NOZZLE                          _UxGT("Buse")
 #define MSG_BED                             _UxGT("Lit")

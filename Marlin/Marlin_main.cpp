@@ -5658,7 +5658,7 @@ void home_all_axes() { gcode_G28(true); }
         recalc_delta_settings();
 
         endstops.enable(true);
-        if (!home_delta()) return;
+        if (!home_delta()) return false;
         endstops.not_homing();
 
         SERIAL_PROTOCOLPGM("Tuning E");
@@ -5690,7 +5690,7 @@ void home_all_axes() { gcode_G28(true); }
         recalc_delta_settings();
 
         endstops.enable(true);
-        if (!home_delta()) return;
+        if (!home_delta()) return false;
         endstops.not_homing();
 
         SERIAL_PROTOCOLPGM("Tuning R");
@@ -5716,7 +5716,7 @@ void home_all_axes() { gcode_G28(true); }
         recalc_delta_settings();
 
         endstops.enable(true);
-        if (!home_delta()) return;
+        if (!home_delta()) return false;
         endstops.not_homing();
 
         SERIAL_PROTOCOLPGM("Tuning T");
@@ -5750,7 +5750,7 @@ void home_all_axes() { gcode_G28(true); }
       a_fac *= norm; // Normalize to 0.83 for Kossel mini
 
       endstops.enable(true);
-      if (!home_delta()) return;
+      if (!home_delta()) return false;
       endstops.not_homing();
       print_signed_float(PSTR( "H_FACTOR: "), h_fac);
       print_signed_float(PSTR(" R_FACTOR: "), r_fac);

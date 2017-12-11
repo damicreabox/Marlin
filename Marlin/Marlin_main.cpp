@@ -12930,13 +12930,14 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
 #if ENABLED(DUAL_X_CARRIAGE)
 
   /**
-   * Prepare a linear move in a dual X axis setup
+   * Unpark the carriage, if needed
    */
-  inline bool prepare_move_to_destination_dualx() {
-    if (active_extruder_parked) {
+  inline bool dual_x_carriage_unpark() {
+    if (active_extruder_parked)
       switch (dual_x_carriage_mode) {
-        case DXC_FULL_CONTROL_MODE:
-          break;
+
+        case DXC_FULL_CONTROL_MODE: break;
+
         case DXC_AUTO_PARK_MODE:
           if (current_position[E_AXIS] == destination[E_AXIS]) {
             // This is a travel move (with no extrusion)
@@ -12965,6 +12966,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
             if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPGM("Clear active_extruder_parked");
           #endif
           break;
+
         case DXC_DUPLICATION_MODE:
           if (active_extruder == 0) {
             #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -13000,14 +13002,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
           }
           break;
       }
-    }
-    return (
-      #if UBL_SEGMENTED
-        ubl.prepare_segmented_line_to(destination, MMS_SCALED(feedrate_mm_s))
-      #else
-        prepare_move_to_destination_cartesian()
-      #endif
-    );
+    return false;
   }
 
 #endif // DUAL_X_CARRIAGE
@@ -13048,10 +13043,12 @@ void prepare_move_to_destination() {
 
   #endif
 
+  #if ENABLED(DUAL_X_CARRIAGE)
+    if (dual_x_carriage_unpark()) return;
+  #endif
+
   if (
-    #if ENABLED(DUAL_X_CARRIAGE)
-      prepare_move_to_destination_dualx()
-    #elif UBL_SEGMENTED
+    #if UBL_SEGMENTED
       ubl.prepare_segmented_line_to(destination, MMS_SCALED(feedrate_mm_s))
     #elif IS_KINEMATIC
       prepare_kinematic_move_to(destination)

@@ -1280,18 +1280,18 @@
 /**
  * User-defined menu items that execute custom GCode
  */
-//#define CUSTOM_USER_MENUS
+#define CUSTOM_USER_MENUS
 #if ENABLED(CUSTOM_USER_MENUS)
-  #define USER_SCRIPT_DONE "M117 User Script Done"
-  #define USER_SCRIPT_AUDIBLE_FEEDBACK
-  //#define USER_SCRIPT_RETURN  // Return to status screen after a script
+  #define USER_SCRIPT_DONE "M117 Script terminé"
+//  #define USER_SCRIPT_AUDIBLE_FEEDBACK
+  #define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Home & UBL Info"
-  #define USER_GCODE_1 "G28\nG29 W"
+  #define USER_DESC_1 "Préparation PLA"
+  #define USER_GCODE_1 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nG28\nG29\nG90\nG0 X0 Y204 Z42"
 
-  #define USER_DESC_2 "Preheat for PLA"
-  #define USER_GCODE_2 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
-
+  #define USER_DESC_2 "Réglage chariot Z"
+  #define USER_GCODE_2 "M117 Réglage chariot Z\nG28\nG90\nG0 X80 Y204 Z42\nM18"
+/*
   #define USER_DESC_3 "Preheat for ABS"
   #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
 
@@ -1300,7 +1300,8 @@
 
   #define USER_DESC_5 "Home & Info"
   #define USER_GCODE_5 "G28\nM503"
-#endif
+*/
+ #endif
 
 /**
  * Specify an action command to send to the host when the printer is killed.

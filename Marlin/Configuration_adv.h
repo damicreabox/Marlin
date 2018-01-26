@@ -94,7 +94,7 @@
    * If you get too many "Heating failed" errors, increase WATCH_BED_TEMP_PERIOD and/or decrease
    * WATCH_BED_TEMP_INCREASE. (WATCH_BED_TEMP_INCREASE should not be below 2.)
    */
-  #define WATCH_BED_TEMP_PERIOD 60                // Seconds
+  #define WATCH_BED_TEMP_PERIOD 20                // Seconds
   #define WATCH_BED_TEMP_INCREASE 2               // Degrees Celsius
 #endif
 
@@ -1287,7 +1287,7 @@
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
 
   #define USER_DESC_1 "Préparation PLA"
-  #define USER_GCODE_1 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nG28\nG29\nG90\nG0 X0 Y204 Z42"
+  #define USER_GCODE_1 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nM140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nG28\nG29\nG90\nG0 X0 Y204 Z42"
 
   #define USER_DESC_2 "Réglage chariot Z"
   #define USER_GCODE_2 "M117 Réglage chariot Z\nG28\nG90\nG0 X80 Y204 Z42\nM18"

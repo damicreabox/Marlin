@@ -1286,11 +1286,17 @@
 //  #define USER_SCRIPT_AUDIBLE_FEEDBACK
   #define USER_SCRIPT_RETURN  // Return to status screen after a script
 
-  #define USER_DESC_1 "Préparation PLA"
-  #define USER_GCODE_1 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nM140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nG28\nG29\nG90\nG0 X0 Y204 Z42"
+  #define USER_DESC_1 "Prépa. PLA buse+plat."
+  #define USER_GCODE_1 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nM140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nG28\nG29\nG90\nG0 X0 Y204 Z42 F2000"
 
-  #define USER_DESC_2 "Réglage chariot Z"
-  #define USER_GCODE_2 "M117 Réglage chariot Z\nG28\nG90\nG0 X80 Y204 Z42\nM18"
+  #define USER_DESC_2 "Prépa. PLA buse"
+  #define USER_GCODE_2 "M117 Préparation PLA\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND) "\nG28\nG29\nG90\nG0 X0 Y204 Z42 F2000"
+
+  #define USER_DESC_3 "Dégagement tête"
+  #define USER_GCODE_3 "M117 Position d'attente\nG91\nG0 Z20 F1000\nG90\nG0 X10 Y204 F2000\nM18"
+
+  #define USER_DESC_4 "Réglage chariot Z"
+  #define USER_GCODE_4 "M117 Réglage chariot Z\nG28\nG90\nG0 X80 Y204 Z42 F2000\nM18"
 /*
   #define USER_DESC_3 "Preheat for ABS"
   #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)

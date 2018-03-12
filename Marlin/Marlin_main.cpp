@@ -1293,7 +1293,7 @@ bool get_target_extruder_from_command(const uint16_t code) {
 
 #endif // DUAL_X_CARRIAGE
 
-#if HAS_WORKSPACE_OFFSET || ENABLED(DUAL_X_CARRIAGE)
+#if HAS_WORKSPACE_OFFSET || ENABLED(DUAL_X_CARRIAGE) || ENABLED(DELTA)
 
   /**
    * Software endstops can be used to monitor the open end of
@@ -1371,7 +1371,7 @@ bool get_target_extruder_from_command(const uint16_t code) {
     #endif
   }
 
-#endif // HAS_WORKSPACE_OFFSET || DUAL_X_CARRIAGE
+#endif // HAS_WORKSPACE_OFFSET || DUAL_X_CARRIAGE || DELTA
 
 #if HAS_M206_COMMAND
   /**
@@ -2244,13 +2244,12 @@ static void clean_up_after_endstop_or_probe_move() {
 
     #else
 
-      // If the nozzle is above the travel height then
+      // If the nozzle is well over the travel height then
       // move down quickly before doing the slow probe
-      float z = Z_CLEARANCE_DEPLOY_PROBE;
+      float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0;
       if (zprobe_zoffset < 0) z -= zprobe_zoffset;
 
-      if (z < current_position[Z_AXIS]) {
-
+      if (current_position[Z_AXIS] > z) {
         // If we don't make it to the z position (i.e. the probe triggered), move up to make clearance for the probe
         if (!do_probe_move(z, Z_PROBE_SPEED_FAST))
           do_blocking_move_to_z(current_position[Z_AXIS] + Z_CLEARANCE_BETWEEN_PROBES, MMM_TO_MMS(Z_PROBE_SPEED_FAST));
@@ -3055,6 +3054,12 @@ static void homeaxis(const AxisEnum axis) {
   // Put away the Z probe
   #if HOMING_Z_WITH_PROBE
     if (axis == Z_AXIS && STOW_PROBE()) return;
+  #endif
+
+  // Clear retracted status if homing the Z axis
+  #if ENABLED(FWRETRACT)
+    if (axis == Z_AXIS)
+      for (uint8_t i = 0; i < EXTRUDERS; i++) fwretract.retracted[i] = false;
   #endif
 
   #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -4490,7 +4495,8 @@ void home_all_axes() { gcode_G28(true); }
 
       #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
-        if (parser.seen('W')) {
+        const bool seen_w = parser.seen('W');
+        if (seen_w) {
           if (!leveling_is_valid()) {
             SERIAL_ERROR_START();
             SERIAL_ERRORLNPGM("No bilinear grid");
@@ -4528,10 +4534,14 @@ void home_all_axes() { gcode_G28(true); }
           return;
         } // parser.seen('W')
 
+      #else
+
+        constexpr bool seen_w = false;
+
       #endif
 
       // Jettison bed leveling data
-      if (parser.seen('J')) {
+      if (!seen_w && parser.seen('J')) {
         reset_bed_level();
         return;
       }
@@ -6727,10 +6737,10 @@ inline void gcode_M17() {
       // If retracted before goto pause
       if (fwretract.retracted[active_extruder])
         do_pause_e_move(-fwretract.retract_length, fwretract.retract_feedrate_mm_s);
-    #else
-      // If resume_position is negative
-      if (resume_position[E_AXIS] < 0) do_pause_e_move(resume_position[E_AXIS], PAUSE_PARK_RETRACT_FEEDRATE);
     #endif
+
+    // If resume_position is negative
+    if (resume_position[E_AXIS] < 0) do_pause_e_move(resume_position[E_AXIS], PAUSE_PARK_RETRACT_FEEDRATE);
 
     // Move XY to starting position, then Z
     do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
@@ -12360,6 +12370,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
 
     // The approximate length of each segment
     const float inv_segments = 1.0 / float(segments),
+                cartesian_segment_mm = cartesian_mm * inv_segments,
                 segment_distance[XYZE] = {
                   xdiff * inv_segments,
                   ydiff * inv_segments,
@@ -12369,6 +12380,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
 
     // SERIAL_ECHOPAIR("mm=", cartesian_mm);
     // SERIAL_ECHOLNPAIR(" segments=", segments);
+    // SERIAL_ECHOLNPAIR(" segment_mm=", cartesian_segment_mm);
 
     // Get the raw current position as starting point
     float raw[XYZE];
@@ -12383,12 +12395,12 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
         idle();
       }
       LOOP_XYZE(i) raw[i] += segment_distance[i];
-      planner.buffer_line_kinematic(raw, fr_mm_s, active_extruder);
+      planner.buffer_line_kinematic(raw, fr_mm_s, active_extruder, cartesian_segment_mm);
     }
 
     // Since segment_distance is only approximate,
     // the final move must be to the exact destination.
-    planner.buffer_line_kinematic(destination, fr_mm_s, active_extruder);
+    planner.buffer_line_kinematic(destination, fr_mm_s, active_extruder, cartesian_segment_mm);
   }
 
 #elif ENABLED(MESH_BED_LEVELING)
@@ -12585,6 +12597,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
 
     // The approximate length of each segment
     const float inv_segments = 1.0 / float(segments),
+                cartesian_segment_mm = cartesian_mm * inv_segments,
                 segment_distance[XYZE] = {
                   xdiff * inv_segments,
                   ydiff * inv_segments,
@@ -12595,6 +12608,7 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
     // SERIAL_ECHOPAIR("mm=", cartesian_mm);
     // SERIAL_ECHOPAIR(" seconds=", seconds);
     // SERIAL_ECHOLNPAIR(" segments=", segments);
+    // SERIAL_ECHOLNPAIR(" segment_mm=", cartesian_segment_mm);
 
     #if ENABLED(SCARA_FEEDRATE_SCALING)
       // SCARA needs to scale the feed rate from mm/s to degrees/s
@@ -12632,10 +12646,10 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
       #if ENABLED(SCARA_FEEDRATE_SCALING)
         // For SCARA scale the feed rate from mm/s to degrees/s
         // i.e., Complete the angular vector in the given time.
-        planner.buffer_segment(delta[A_AXIS], delta[B_AXIS], raw[Z_AXIS], raw[E_AXIS], HYPOT(delta[A_AXIS] - oldA, delta[B_AXIS] - oldB) * inverse_secs, active_extruder);
+        planner.buffer_segment(delta[A_AXIS], delta[B_AXIS], raw[Z_AXIS], raw[E_AXIS], HYPOT(delta[A_AXIS] - oldA, delta[B_AXIS] - oldB) * inverse_secs, active_extruder, cartesian_segment_mm);
         oldA = delta[A_AXIS]; oldB = delta[B_AXIS];
       #else
-        planner.buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], raw[E_AXIS], _feedrate_mm_s, active_extruder);
+        planner.buffer_line(delta[A_AXIS], delta[B_AXIS], delta[C_AXIS], raw[E_AXIS], _feedrate_mm_s, active_extruder, cartesian_segment_mm);
       #endif
     }
 
@@ -12643,9 +12657,9 @@ void set_current_from_steppers_for_axis(const AxisEnum axis) {
     #if ENABLED(SCARA_FEEDRATE_SCALING)
       inverse_kinematics(rtarget);
       ADJUST_DELTA(rtarget);
-      planner.buffer_segment(delta[A_AXIS], delta[B_AXIS], rtarget[Z_AXIS], rtarget[E_AXIS], HYPOT(delta[A_AXIS] - oldA, delta[B_AXIS] - oldB) * inverse_secs, active_extruder);
+      planner.buffer_segment(delta[A_AXIS], delta[B_AXIS], rtarget[Z_AXIS], rtarget[E_AXIS], HYPOT(delta[A_AXIS] - oldA, delta[B_AXIS] - oldB) * inverse_secs, active_extruder, cartesian_segment_mm);
     #else
-      planner.buffer_line_kinematic(rtarget, _feedrate_mm_s, active_extruder);
+      planner.buffer_line_kinematic(rtarget, _feedrate_mm_s, active_extruder, cartesian_segment_mm);
     #endif
 
     return false; // caller will update current_position

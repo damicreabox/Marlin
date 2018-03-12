@@ -57,8 +57,8 @@
 #define MSG_SET_ORIGIN                      _UxGT("Regler origine")
 #define MSG_PREHEAT_1                       _UxGT("Prechauffage PLA")
 #define MSG_PREHEAT_1_N                     _UxGT("Prechauff. PLA ")
-#define MSG_PREHEAT_1_ALL                   _UxGT("Prech. PLA Tout")
-#define MSG_PREHEAT_1_END                   MSG_PREHEAT_1 _UxGT(" fini")
+#define MSG_PREHEAT_1_ALL                   _UxGT("Prech. PLA complet")
+#define MSG_PREHEAT_1_END                   _UxGT("Prech. PLA buse")
 #define MSG_PREHEAT_1_BEDONLY               _UxGT("Prech. PLA lit")
 #define MSG_PREHEAT_1_SETTINGS              _UxGT("Regl. prech. PLA")
 #define MSG_PREHEAT_2                       _UxGT("Prechauffage ABS")
@@ -305,11 +305,7 @@
 #define MSG_DAC_PERCENT                     _UxGT("Driver %")
 #define MSG_DAC_EEPROM_WRITE                _UxGT("DAC EEPROM sauv.")
 
-#define MSG_FILAMENT_CHANGE_HEADER          _UxGT("EN PAUSE")
-#define MSG_FILAMENT_CHANGE_OPTION_HEADER   _UxGT("OPTIONS REPRISE:")
-#define MSG_FILAMENT_CHANGE_OPTION_EXTRUDE  _UxGT("Extrusion")
 #define MSG_FILAMENT_CHANGE_OPTION_RESUME   _UxGT("Reprendre impr.")
-#define MSG_FILAMENT_CHANGE_MINTEMP         _UxGT("Temp. mini : ")
 #define MSG_FILAMENT_CHANGE_NOZZLE          _UxGT("  Buse: ")
 
 #if LCD_HEIGHT >= 4
@@ -328,8 +324,6 @@
   #define MSG_FILAMENT_CHANGE_HEATING_2     _UxGT("Patientez SVP...")
   #define MSG_FILAMENT_CHANGE_LOAD_1        _UxGT("attente de")
   #define MSG_FILAMENT_CHANGE_LOAD_2        _UxGT("chargement filament")
-  #define MSG_FILAMENT_CHANGE_EXTRUDE_1     _UxGT("attente de")
-  #define MSG_FILAMENT_CHANGE_EXTRUDE_2     _UxGT("extrusion filament")
   #define MSG_FILAMENT_CHANGE_RESUME_1      _UxGT("attente impression")
   #define MSG_FILAMENT_CHANGE_RESUME_2      _UxGT("pour reprendre")
 #else // LCD_HEIGHT < 4
@@ -338,7 +332,6 @@
   #define MSG_FILAMENT_CHANGE_UNLOAD_1      _UxGT("Ejection...")
   #define MSG_FILAMENT_CHANGE_INSERT_1      _UxGT("Inserer et clic")
   #define MSG_FILAMENT_CHANGE_LOAD_1        _UxGT("Chargement...")
-  #define MSG_FILAMENT_CHANGE_EXTRUDE_1     _UxGT("Extrusion...")
   #define MSG_FILAMENT_CHANGE_RESUME_1      _UxGT("Reprise...")
 #endif // LCD_HEIGHT < 4
 

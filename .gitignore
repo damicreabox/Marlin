@@ -52,7 +52,6 @@ tags
 *.lo
 *.o
 *.obj
-*.ino.cpp
 
 # Precompiled Headers
 *.gch
@@ -116,40 +115,20 @@ tags
 *.dSYM/
 *.su
 
-# PlatformIO files/dirs
-.pio*
+#PlatformIO files/dirs
 .pioenvs
+.piolib
 .piolibdeps
-lib/readme.txt
 
 #Visual Studio
 *.sln
 *.vcxproj
 *.vcxproj.filters
-Release/
-Debug/
-__vm/
-.vs/
-vc-fileutils.settings
-
-#VScode
-.vscode
-.vscode/c_cpp_properties.json
+Marlin/Release/
+Marlin/Debug/
+Marlin/__vm/
+Marlin/.vs/
 
 #cmake
 CMakeLists.txt
 Marlin/CMakeLists.txt
-CMakeListsPrivate.txt
-
-#CLion
-cmake-build-*
-=======
-
-# ignore platformio libs and temporary files
-Marlin/lib
-.clang_complete
-.gcc-flags.json
-.pioenvs
-.piolibdeps
-
-.tags*

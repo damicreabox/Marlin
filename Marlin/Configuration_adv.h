@@ -32,7 +32,7 @@
  */
 #ifndef CONFIGURATION_ADV_H
 #define CONFIGURATION_ADV_H
-#define CONFIGURATION_ADV_H_VERSION 010107
+#define CONFIGURATION_ADV_H_VERSION 010100
 
 // @section temperature
 
@@ -48,36 +48,31 @@
 #endif
 
 /**
- * Thermal Protection provides additional protection to your printer from damage
- * and fire. Marlin always includes safe min and max temperature ranges which
- * protect against a broken or disconnected thermistor wire.
+ * Thermal Protection protects your printer from damage and fire if a
+ * thermistor falls out or temperature sensors fail in any way.
  *
- * The issue: If a thermistor falls out, it will report the much lower
- * temperature of the air in the room, and the the firmware will keep
- * the heater on.
+ * The issue: If a thermistor falls out or a temperature sensor fails,
+ * Marlin can no longer sense the actual temperature. Since a disconnected
+ * thermistor reads as a low temperature, the firmware will keep the heater on.
  *
  * The solution: Once the temperature reaches the target, start observing.
- * If the temperature stays too far below the target (hysteresis) for too
- * long (period), the firmware will halt the machine as a safety precaution.
+ * If the temperature stays too far below the target (hysteresis) for too long (period),
+ * the firmware will halt the machine as a safety precaution.
  *
- * If you get false positives for "Thermal Runaway", increase
- * THERMAL_PROTECTION_HYSTERESIS and/or THERMAL_PROTECTION_PERIOD
+ * If you get false positives for "Thermal Runaway" increase THERMAL_PROTECTION_HYSTERESIS and/or THERMAL_PROTECTION_PERIOD
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
   #define THERMAL_PROTECTION_PERIOD 40        // Seconds
   #define THERMAL_PROTECTION_HYSTERESIS 4     // Degrees Celsius
 
   /**
-   * Whenever an M104, M109, or M303 increases the target temperature, the
-   * firmware will wait for the WATCH_TEMP_PERIOD to expire. If the temperature
-   * hasn't increased by WATCH_TEMP_INCREASE degrees, the machine is halted and
-   * requires a hard reset. This test restarts with any M104/M109/M303, but only
-   * if the current temperature is far enough below the target for a reliable
-   * test.
+   * Whenever an M104 or M109 increases the target temperature the firmware will wait for the
+   * WATCH_TEMP_PERIOD to expire, and if the temperature hasn't increased by WATCH_TEMP_INCREASE
+   * degrees, the machine is halted, requiring a hard reset. This test restarts with any M104/M109,
+   * but only if the current temperature is far enough below the target for a reliable test.
    *
-   * If you get false positives for "Heating failed", increase WATCH_TEMP_PERIOD
-   * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
-   * below 2.
+   * If you get false positives for "Heating failed" increase WATCH_TEMP_PERIOD and/or decrease WATCH_TEMP_INCREASE
+   * WATCH_TEMP_INCREASE should not be below 2.
    */
   #define WATCH_TEMP_PERIOD 20                // Seconds
   #define WATCH_TEMP_INCREASE 2               // Degrees Celsius
@@ -91,7 +86,13 @@
   #define THERMAL_PROTECTION_BED_HYSTERESIS 2 // Degrees Celsius
 
   /**
-   * As described above, except for the bed (M140/M190/M303).
+   * Whenever an M140 or M190 increases the target temperature the firmware will wait for the
+   * WATCH_BED_TEMP_PERIOD to expire, and if the temperature hasn't increased by WATCH_BED_TEMP_INCREASE
+   * degrees, the machine is halted, requiring a hard reset. This test restarts with any M140/M190,
+   * but only if the current temperature is far enough below the target for a reliable test.
+   *
+   * If you get too many "Heating failed" errors, increase WATCH_BED_TEMP_PERIOD and/or decrease
+   * WATCH_BED_TEMP_INCREASE. (WATCH_BED_TEMP_INCREASE should not be below 2.)
    */
   #define WATCH_BED_TEMP_PERIOD 60                // Seconds
   #define WATCH_BED_TEMP_INCREASE 2               // Degrees Celsius
@@ -100,7 +101,7 @@
 #if ENABLED(PIDTEMP)
   // this adds an experimental additional term to the heating power, proportional to the extrusion speed.
   // if Kc is chosen well, the additional required power due to increased melting should be compensated.
-  #define PID_EXTRUSION_SCALING
+  //#define PID_EXTRUSION_SCALING
   #if ENABLED(PID_EXTRUSION_SCALING)
     #define DEFAULT_Kc (100) //heating power=Kc*(e_speed)
     #define LPQ_MAX_LEN 50
@@ -122,11 +123,8 @@
   #define AUTOTEMP_OLDWEIGHT 0.98
 #endif
 
-// Show extra position information in M114
-//#define M114_DETAIL
-
-// Show Temperature ADC value
-// Enable for M105 to include ADC values read from temperature sensors.
+//Show Temperature ADC value
+//The M105 command return, besides traditional information, the ADC value read from temperature sensors.
 //#define SHOW_TEMP_ADC_VALUES
 
 /**
@@ -259,21 +257,9 @@
 
 //#define Z_LATE_ENABLE // Enable Z the last moment. Needed if your Z driver overheats.
 
-/**
- * Dual Steppers / Dual Endstops
- *
- * This section will allow you to use extra E drivers to drive a second motor for X, Y, or Z axes.
- *
- * For example, set X_DUAL_STEPPER_DRIVERS setting to use a second motor. If the motors need to
- * spin in opposite directions set INVERT_X2_VS_X_DIR. If the second motor needs its own endstop
- * set X_DUAL_ENDSTOPS. This can adjust for "racking." Use X2_USE_ENDSTOP to set the endstop plug
- * that should be used for the second endstop. Extra endstops will appear in the output of 'M119'.
- *
- * Use X_DUAL_ENDSTOP_ADJUSTMENT to adjust for mechanical imperfection. After homing both motors
- * this offset is applied to the X2 motor. To find the offset home the X axis, and measure the error
- * in X2. Dual endstop offsets can be set at runtime with 'M666 X<offset> Y<offset> Z<offset>'.
- */
-
+// Dual X Steppers
+// Uncomment this option to drive two X axis motors.
+// The next unused E driver will be assigned to the second X stepper.
 //#define X_DUAL_STEPPER_DRIVERS
 #if ENABLED(X_DUAL_STEPPER_DRIVERS)
   #define INVERT_X2_VS_X_DIR true   // Set 'true' if X motors should rotate in opposite directions
@@ -284,6 +270,9 @@
   #endif
 #endif
 
+// Dual Y Steppers
+// Uncomment this option to drive two Y axis motors.
+// The next unused E driver will be assigned to the second Y stepper.
 //#define Y_DUAL_STEPPER_DRIVERS
 #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
   #define INVERT_Y2_VS_Y_DIR true   // Set 'true' if Y motors should rotate in opposite directions
@@ -294,14 +283,30 @@
   #endif
 #endif
 
+// A single Z stepper driver is usually used to drive 2 stepper motors.
+// Uncomment this option to use a separate stepper driver for each Z axis motor.
+// The next unused E driver will be assigned to the second Z stepper.
 //#define Z_DUAL_STEPPER_DRIVERS
+
 #if ENABLED(Z_DUAL_STEPPER_DRIVERS)
+
+  // Z_DUAL_ENDSTOPS is a feature to enable the use of 2 endstops for both Z steppers - Let's call them Z stepper and Z2 stepper.
+  // That way the machine is capable to align the bed during home, since both Z steppers are homed.
+  // There is also an implementation of M666 (software endstops adjustment) to this feature.
+  // After Z homing, this adjustment is applied to just one of the steppers in order to align the bed.
+  // One just need to home the Z axis and measure the distance difference between both Z axis and apply the math: Z adjust = Z - Z2.
+  // If the Z stepper axis is closer to the bed, the measure Z > Z2 (yes, it is.. think about it) and the Z adjust would be positive.
+  // Play a little bit with small adjustments (0.5mm) and check the behaviour.
+  // The M119 (endstops report) will start reporting the Z2 Endstop as well.
+
   //#define Z_DUAL_ENDSTOPS
+
   #if ENABLED(Z_DUAL_ENDSTOPS)
     #define Z2_USE_ENDSTOP _XMAX_
-    #define Z_DUAL_ENDSTOPS_ADJUSTMENT  0
+    #define Z_DUAL_ENDSTOPS_ADJUSTMENT  0  // use M666 command to determine/test this value
   #endif
-#endif
+
+#endif // Z_DUAL_STEPPER_DRIVERS
 
 // Enable this for dual x-carriage printers.
 // A dual x-carriage design has the advantage that the inactive extruder can be parked which
@@ -348,12 +353,12 @@
 
 // @section homing
 
-// Homing hits each endstop, retracts by these distances, then does a slower bump.
+//homing hits the endstop, then retracts by this distance, before it tries to slowly bump again:
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
 #define Z_HOME_BUMP_MM 2
-#define HOMING_BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
-//#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
+#define HOMING_BUMP_DIVISOR {2, 2, 4}  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+//#define QUICK_HOME  //if this is defined, if both x and y are to be homed, a diagonal move will be performed initially.
 
 // When G28 is called, this option will make Y home before X
 //#define HOME_Y_BEFORE_X
@@ -383,8 +388,6 @@
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // minimum feedrate
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
 
-//#define HOME_AFTER_DEACTIVATE  // Require rehoming after steppers are deactivated
-
 // @section lcd
 
 #if ENABLED(ULTIPANEL)
@@ -408,7 +411,7 @@
 // Minimum planner junction speed. Sets the default minimum speed the planner plans for at the end
 // of the buffer and all stops. This should not be much greater than zero and should only be changed
 // if unwanted behavior is observed on a user's machine when running at very slow speeds.
-#define MINIMUM_PLANNER_SPEED 0.05 // (mm/sec)
+#define MINIMUM_PLANNER_SPEED 0.05// (mm/sec)
 
 // Microstep setting (Only functional when stepper driver microstep pins are connected to MCU.
 #define MICROSTEP_MODES {16,16,16,16,16} // [1,2,4,8,16]
@@ -433,11 +436,11 @@
  *    M908 - BQ_ZUM_MEGA_3D, RAMBO, PRINTRBOARD_REVF, RIGIDBOARD_V2 & SCOOVO_X9H
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
-//#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
-//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
-//#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
+//#define PWM_MOTOR_CURRENT {1300, 1300, 1250} // Values in milliamps
+//#define DIGIPOT_MOTOR_CURRENT {135,135,135,135,135} // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+//#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 } // Default drive percent - X, Y, Z, E axis
 
-// Use an I2C based DIGIPOT (e.g., Azteeg X3 Pro)
+// Uncomment to enable an I2C based DIGIPOT like on the Azteeg X3 Pro
 //#define DIGIPOT_I2C
 #if ENABLED(DIGIPOT_I2C) && !defined(DIGIPOT_I2C_ADDRESS_A)
   /**
@@ -472,9 +475,6 @@
 
 // Include a page of printer information in the LCD Main Menu
 //#define LCD_INFO_MENU
-
-// Scroll a longer status message into view
-//#define STATUS_MESSAGE_SCROLLING
 
 // On the Info Screen, display XY with one decimal place when possible
 //#define LCD_DECIMAL_SMALL_XY
@@ -511,11 +511,9 @@
   #define SD_FINISHED_STEPPERRELEASE true          // Disable steppers when SD Print is finished
   #define SD_FINISHED_RELEASECOMMAND "M84 X Y Z E" // You might want to keep the z enabled so your bed stays in place.
 
-  // Reverse SD sort to show "more recent" files first, according to the card's FAT.
-  // Since the FAT gets out of order with usage, SDCARD_SORT_ALPHA is recommended.
-  #define SDCARD_RATHERRECENTFIRST
-
-  // Add an option in the menu to run all auto#.g files
+  #define SDCARD_RATHERRECENTFIRST  //reverse file order of sd card menu display. Its sorted practically after the file system block order.
+  // if a file is deleted, it frees a block. hence, the order is not purely chronological. To still have auto0.g accessible, there is again the option to do that.
+  // using:
   //#define MENU_ADDAUTOSTART
 
   /**
@@ -545,7 +543,7 @@
 
   // SD Card Sorting options
   #if ENABLED(SDCARD_SORT_ALPHA)
-    #define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256). Costs 27 bytes each.
+    #define SDSORT_LIMIT       40     // Maximum number of sorted items (10-256).
     #define FOLDER_SORTING     -1     // -1=above  0=none  1=below
     #define SDSORT_GCODE       false  // Allow turning sorting on/off with LCD and M34 g-code.
     #define SDSORT_USES_RAM    false  // Pre-allocate a static array for faster pre-sorting.
@@ -572,28 +570,13 @@
     //#define LCD_PROGRESS_BAR_TEST
   #endif
 
-  // Add an 'M73' G-code to set the current percentage
-  //#define LCD_SET_PROGRESS_MANUALLY
-
   // This allows hosts to request long names for files and folders with M33
   //#define LONG_FILENAME_HOST_SUPPORT
 
-  // Enable this option to scroll long filenames in the SD card menu
-  //#define SCROLL_LONG_FILENAMES
-
-  /**
-   * This option allows you to abort SD printing when any endstop is triggered.
-   * This feature must be enabled with "M540 S1" or from the LCD menu.
-   * To have any effect, endstops must be enabled during SD printing.
-   */
+  // This option allows you to abort SD printing when any endstop is triggered.
+  // This feature must be enabled with "M540 S1" or from the LCD menu.
+  // To have any effect, endstops must be enabled during SD printing.
   //#define ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED
-
-  /**
-   * This option makes it easier to print the same SD Card file again.
-   * On print completion the LCD Menu will open with the file selected.
-   * You can just click to start the print, or navigate elsewhere.
-   */
-  //#define SD_REPRINT_LAST_SELECTED_FILE
 
 #endif // SDSUPPORT
 
@@ -627,10 +610,6 @@
   // Enable this option and reduce the value to optimize screen updates.
   // The normal delay is 10µs. Use the lowest value that still gives a reliable display.
   //#define DOGM_SPI_DELAY_US 5
-
-  // Swap the CW/CCW indicators in the graphics overlay
-  //#define OVERLAY_GFX_REVERSE
-
 #endif // DOGLCD
 
 // @section safety
@@ -658,16 +637,29 @@
 //#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define BABYSTEP_XY              // Also enable X/Y Babystepping. Not supported on DELTA!
-  #define BABYSTEP_INVERT_Z false    // Change if Z babysteps should go the other way
-  #define BABYSTEP_MULTIPLICATOR 1   // Babysteps are very small. Increase for faster motion.
-  //#define BABYSTEP_ZPROBE_OFFSET   // Enable to combine M851 and Babystepping
+  #define BABYSTEP_INVERT_Z false  // Change if Z babysteps should go the other way
+  #define BABYSTEP_MULTIPLICATOR 1 // Babysteps are very small. Increase for faster motion.
+  //#define BABYSTEP_ZPROBE_OFFSET // Enable to combine M851 and Babystepping
   //#define DOUBLECLICK_FOR_Z_BABYSTEPPING // Double-click on the Status Screen for Z Babystepping.
   #define DOUBLECLICK_MAX_INTERVAL 1250 // Maximum interval between clicks, in milliseconds.
                                         // Note: Extra time may be added to mitigate controller latency.
-  //#define BABYSTEP_ZPROBE_GFX_OVERLAY // Enable graphical overlay on Z-offset editor
 #endif
 
 // @section extruder
+
+// extruder advance constant (s2/mm3)
+//
+// advance (steps) = STEPS_PER_CUBIC_MM_E * EXTRUDER_ADVANCE_K * cubic mm per second ^ 2
+//
+// Hooke's law says:    force = k * distance
+// Bernoulli's principle says:  v ^ 2 / 2 + g . h + pressure / density = constant
+// so: v ^ 2 is proportional to number of steps we advance the extruder
+//#define ADVANCE
+
+#if ENABLED(ADVANCE)
+  #define EXTRUDER_ADVANCE_K .0
+  #define D_FILAMENT 2.85
+#endif
 
 /**
  * Implementation of linear pressure control
@@ -702,7 +694,7 @@
    *
    * Set to 0 to auto-detect the ratio based on given Gcode G1 print moves.
    *
-   * Slic3r (including Průša Control) produces Gcode compatible with the automatic mode.
+   * Slic3r (including Prusa Slic3r) produces Gcode compatible with the automatic mode.
    * Cura (as of this writing) may produce Gcode incompatible with the automatic mode.
    */
   #define LIN_ADVANCE_E_D_RATIO 0 // The calculated ratio (or 0) according to the formula W * H / ((D / 2) ^ 2 * PI)
@@ -742,7 +734,7 @@
 //#define BEZIER_CURVE_SUPPORT
 
 // G38.2 and G38.3 Probe Target
-// Set MULTIPLE_PROBING if you want G38 to double touch
+// Enable PROBE_DOUBLE_TOUCH if you want G38 to double touch
 //#define G38_PROBE_TARGET
 #if ENABLED(G38_PROBE_TARGET)
   #define G38_MINIMUM_MOVE 0.0275 // minimum distance in mm that will produce a move (determined using the print statement in check_move)
@@ -767,7 +759,7 @@
 // @section hidden
 
 // The number of linear motions that can be in the plan at any give time.
-// THE BLOCK_BUFFER_SIZE NEEDS TO BE A POWER OF 2 (e.g. 8, 16, 32) because shifts and ors are used to do the ring-buffering.
+// THE BLOCK_BUFFER_SIZE NEEDS TO BE A POWER OF 2, i.g. 8,16,32 because shifts and ors are used to do the ring-buffering.
 #if ENABLED(SDSUPPORT)
   #define BLOCK_BUFFER_SIZE 16 // SD,LCD,Buttons take more memory, block buffer needs to be smaller
 #else
@@ -780,7 +772,7 @@
 #define MAX_CMD_SIZE 96
 #define BUFSIZE 4
 
-// Transmission to Host Buffer Size
+// Transfer Buffer Size
 // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
 // To buffer a simple "ok" you need 4 bytes.
 // For ADVANCED_OK (M105) you need 32 bytes.
@@ -826,24 +818,15 @@
 // Some clients will have this feature soon. This could make the NO_TIMEOUTS unnecessary.
 //#define ADVANCED_OK
 
-// @section extras
+// @section fwretract
 
-/**
- * Firmware-based and LCD-controlled retract
- *
- * Add G10 / G11 commands for automatic firmware-based retract / recover.
- * Use M207 and M208 to define parameters for retract / recover.
- *
- * Use M209 to enable or disable auto-retract.
- * With auto-retract enabled, all G1 E moves within the set range
- * will be converted to firmware-based retract/recover moves.
- *
- * Be sure to turn off auto-retract during filament change.
- *
- * Note that M207 / M208 / M209 settings are saved to EEPROM.
- *
- */
-//#define FWRETRACT  // ONLY PARTIALLY TESTED
+// Firmware based and LCD controlled retract
+// M207 and M208 can be used to define parameters for the retraction.
+// The retraction can be called by the slicer using G10 and G11
+// until then, intended retractions can be detected by moves that only extrude and the direction.
+// the moves are than replaced by the firmware controlled ones.
+
+//#define FWRETRACT  //ONLY PARTIALLY TESTED
 #if ENABLED(FWRETRACT)
   #define MIN_AUTORETRACT 0.1             // When auto-retract is on, convert E moves of this length and over
   #define MAX_AUTORETRACT 10.0            // Upper limit for auto-retract conversion
@@ -858,28 +841,22 @@
 #endif
 
 /**
- * Extra Fan Speed
- * Adds a secondary fan speed for each print-cooling fan.
- *   'M106 P<fan> T3-255' : Set a secondary speed for <fan>
- *   'M106 P<fan> T2'     : Use the set secondary speed
- *   'M106 P<fan> T1'     : Restore the previous fan speed
- */
-//#define EXTRA_FAN_SPEED
-
-/**
- * Advanced Pause
- * Experimental feature for filament change support and for parking the nozzle when paused.
+ * Filament Change
+ * Experimental filament change support.
  * Adds the GCode M600 for initiating filament change.
- * If PARK_HEAD_ON_PAUSE enabled, adds the GCode M125 to pause printing and park the nozzle.
  *
  * Requires an LCD display.
- * Requires NOZZLE_PARK_FEATURE.
  * This feature is required for the default FILAMENT_RUNOUT_SCRIPT.
  */
-//#define ADVANCED_PAUSE_FEATURE
-#if ENABLED(ADVANCED_PAUSE_FEATURE)
-  #define PAUSE_PARK_RETRACT_FEEDRATE 60      // Initial retract feedrate in mm/s
-  #define PAUSE_PARK_RETRACT_LENGTH 2         // Initial retract in mm
+//#define FILAMENT_CHANGE_FEATURE
+#if ENABLED(FILAMENT_CHANGE_FEATURE)
+  #define FILAMENT_CHANGE_X_POS 3             // X position of hotend
+  #define FILAMENT_CHANGE_Y_POS 3             // Y position of hotend
+  #define FILAMENT_CHANGE_Z_ADD 10            // Z addition of hotend (lift)
+  #define FILAMENT_CHANGE_XY_FEEDRATE 100     // X and Y axes feedrate in mm/s (also used for delta printers Z axis)
+  #define FILAMENT_CHANGE_Z_FEEDRATE 5        // Z axis feedrate in mm/s (not used for delta printers)
+  #define FILAMENT_CHANGE_RETRACT_FEEDRATE 60 // Initial retract feedrate in mm/s
+  #define FILAMENT_CHANGE_RETRACT_LENGTH 2    // Initial retract in mm
                                               // It is a short retract used immediately after print interrupt before move to filament exchange position
   #define FILAMENT_CHANGE_UNLOAD_FEEDRATE 10  // Unload filament feedrate in mm/s - filament unloading can be fast
   #define FILAMENT_CHANGE_UNLOAD_LENGTH 100   // Unload filament length from hotend in mm
@@ -890,17 +867,16 @@
   #define FILAMENT_CHANGE_LOAD_LENGTH 0       // Load filament length over hotend in mm
                                               // Longer length for bowden printers to fast load filament into whole bowden tube over the hotend,
                                               // Short or zero length for printers without bowden where loading is not used
-  #define ADVANCED_PAUSE_EXTRUDE_FEEDRATE 3   // Extrude filament feedrate in mm/s - must be slower than load feedrate
-  #define ADVANCED_PAUSE_EXTRUDE_LENGTH 50    // Extrude filament length in mm after filament is loaded over the hotend,
+  #define FILAMENT_CHANGE_EXTRUDE_FEEDRATE 3  // Extrude filament feedrate in mm/s - must be slower than load feedrate
+  #define FILAMENT_CHANGE_EXTRUDE_LENGTH 50   // Extrude filament length in mm after filament is loaded over the hotend,
                                               // 0 to disable for manual extrusion
                                               // Filament can be extruded repeatedly from the filament exchange menu to fill the hotend,
                                               // or until outcoming filament color is not clear for filament color change
-  #define PAUSE_PARK_NOZZLE_TIMEOUT 45        // Turn off nozzle if user doesn't change filament within this time limit in seconds
+  #define FILAMENT_CHANGE_NOZZLE_TIMEOUT 45   // Turn off nozzle if user doesn't change filament within this time limit in seconds
   #define FILAMENT_CHANGE_NUMBER_OF_ALERT_BEEPS 5 // Number of alert beeps before printer goes quiet
-  #define PAUSE_PARK_NO_STEPPER_TIMEOUT       // Enable to have stepper motors hold position during filament change
+  #define FILAMENT_CHANGE_NO_STEPPER_TIMEOUT  // Enable to have stepper motors hold position during filament change
                                               // even if it takes longer than DEFAULT_STEPPER_DEACTIVE_TIME.
   //#define PARK_HEAD_ON_PAUSE                // Go to filament change position on pause, return to print position on resume
-  //#define HOME_BEFORE_FILAMENT_CHANGE       // Ensure homing has been completed prior to parking for filament change
 #endif
 
 // @section tmc
@@ -972,7 +948,7 @@
 
 #endif
 
-// @section TMC2130, TMC2208
+// @section TMC2130
 
 /**
  * Enable this for SilentStepStick Trinamic TMC2130 SPI-configurable stepper drivers.
@@ -986,19 +962,7 @@
  */
 //#define HAVE_TMC2130
 
-/**
- * Enable this for SilentStepStick Trinamic TMC2208 UART-configurable stepper drivers.
- * Connect #_SERIAL_TX_PIN to the driver side PDN_UART pin.
- * To use the reading capabilities, also connect #_SERIAL_RX_PIN
- * to #_SERIAL_TX_PIN with a 1K resistor.
- * The drivers can also be used with hardware serial.
- *
- * You'll also need the TMC2208Stepper Arduino library
- * (https://github.com/teemuatlut/TMC2208Stepper).
- */
-//#define HAVE_TMC2208
-
-#if ENABLED(HAVE_TMC2130) || ENABLED(HAVE_TMC2208)
+#if ENABLED(HAVE_TMC2130)
 
   // CHOOSE YOUR MOTORS HERE, THIS IS MANDATORY
   //#define X_IS_TMC2130
@@ -1013,25 +977,13 @@
   //#define E3_IS_TMC2130
   //#define E4_IS_TMC2130
 
-  //#define X_IS_TMC2208
-  //#define X2_IS_TMC2208
-  //#define Y_IS_TMC2208
-  //#define Y2_IS_TMC2208
-  //#define Z_IS_TMC2208
-  //#define Z2_IS_TMC2208
-  //#define E0_IS_TMC2208
-  //#define E1_IS_TMC2208
-  //#define E2_IS_TMC2208
-  //#define E3_IS_TMC2208
-  //#define E4_IS_TMC2208
-
   /**
    * Stepper driver settings
    */
 
   #define R_SENSE           0.11  // R_sense resistor for SilentStepStick2130
   #define HOLD_MULTIPLIER    0.5  // Scales down the holding current from run current
-  #define INTERPOLATE       true  // Interpolate X/Y/Z_MICROSTEPS to 256
+  #define INTERPOLATE          1  // Interpolate X/Y/Z_MICROSTEPS to 256
 
   #define X_CURRENT          800  // rms current in mA. Multiply by 1.41 for peak current.
   #define X_MICROSTEPS        16  // 0..256
@@ -1073,22 +1025,24 @@
   #define STEALTHCHOP
 
   /**
-   * Monitor Trinamic TMC2130 and TMC2208 drivers for error conditions,
-   * like overtemperature and short to ground. TMC2208 requires hardware serial.
-   * In the case of overtemperature Marlin can decrease the driver current until error condition clears.
-   * Other detected conditions can be used to stop the current print.
+   * Let Marlin automatically control stepper current.
+   * This is still an experimental feature.
+   * Increase current every 5s by CURRENT_STEP until stepper temperature prewarn gets triggered,
+   * then decrease current by CURRENT_STEP until temperature prewarn is cleared.
+   * Adjusting starts from X/Y/Z/E_CURRENT but will not increase over AUTO_ADJUST_MAX
    * Relevant g-codes:
    * M906 - Set or get motor current in milliamps using axis codes X, Y, Z, E. Report values if no axis codes given.
+   * M906 S1 - Start adjusting current
+   * M906 S0 - Stop adjusting current
    * M911 - Report stepper driver overtemperature pre-warn condition.
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
-   * M122 S0/1 - Report driver parameters (Requires TMC_DEBUG)
    */
-  //#define MONITOR_DRIVER_STATUS
+  //#define AUTOMATIC_CURRENT_CONTROL
 
-  #if ENABLED(MONITOR_DRIVER_STATUS)
-    #define CURRENT_STEP_DOWN     50  // [mA]
+  #if ENABLED(AUTOMATIC_CURRENT_CONTROL)
+    #define CURRENT_STEP          50  // [mA]
+    #define AUTO_ADJUST_MAX     1300  // [mA], 1300mA_rms = 1840mA_peak
     #define REPORT_CURRENT_CHANGE
-    #define STOP_ON_ERROR
   #endif
 
   /**
@@ -1114,7 +1068,7 @@
   /**
    * Use stallGuard2 to sense an obstacle and trigger an endstop.
    * You need to place a wire from the driver's DIAG1 pin to the X/Y endstop pin.
-   * X and Y homing will always be done in spreadCycle mode.
+   * If used along with STEALTHCHOP, the movement will be louder when homing. This is normal.
    *
    * X/Y_HOMING_SENSITIVITY is used for tuning the trigger sensitivity.
    * Higher values make the system LESS sensitive.
@@ -1123,7 +1077,7 @@
    * It is advised to set X/Y_HOME_BUMP_MM to 0.
    * M914 X/Y to live tune the setting
    */
-  //#define SENSORLESS_HOMING // TMC2130 only
+  //#define SENSORLESS_HOMING
 
   #if ENABLED(SENSORLESS_HOMING)
     #define X_HOMING_SENSITIVITY  8
@@ -1131,26 +1085,19 @@
   #endif
 
   /**
-   * Enable M122 debugging command for TMC stepper drivers.
-   * M122 S0/1 will enable continous reporting.
-   */
-  //#define TMC_DEBUG
-
-  /**
    * You can set your own advanced settings by filling in predefined functions.
    * A list of available functions can be found on the library github page
    * https://github.com/teemuatlut/TMC2130Stepper
-   * https://github.com/teemuatlut/TMC2208Stepper
    *
    * Example:
-   * #define TMC_ADV() { \
+   * #define TMC2130_ADV() { \
    *   stepperX.diag0_temp_prewarn(1); \
-   *   stepperY.interpolate(0); \
+   *   stepperX.interpolate(0); \
    * }
    */
-  #define  TMC_ADV() {  }
+  #define  TMC2130_ADV() {  }
 
-#endif // TMC2130 || TMC2208
+#endif // ENABLED(HAVE_TMC2130)
 
 // @section L6470
 
@@ -1371,20 +1318,13 @@
 #define EXTENDED_CAPABILITIES_REPORT
 
 /**
- * Disable all Volumetric extrusion options
+ * Volumetric extrusion default state
+ * Activate to make volumetric extrusion the default method,
+ * with DEFAULT_NOMINAL_FILAMENT_DIA as the default diameter.
+ *
+ * M200 D0 to disable, M200 Dn to set a new diameter.
  */
-//#define NO_VOLUMETRICS
-
-#if DISABLED(NO_VOLUMETRICS)
-  /**
-   * Volumetric extrusion default state
-   * Activate to make volumetric extrusion the default method,
-   * with DEFAULT_NOMINAL_FILAMENT_DIA as the default diameter.
-   *
-   * M200 D0 to disable, M200 Dn to set a new diameter.
-   */
-  //#define VOLUMETRIC_DEFAULT_ON
-#endif
+//#define VOLUMETRIC_DEFAULT_ON
 
 /**
  * Enable this option for a leaner build of Marlin that removes all

@@ -20,26 +20,30 @@
  *
  */
 
-/**
- * Include pins definitions
- *
- * Pins numbering schemes:
- *
- *  - Digital I/O pin number if used by READ/WRITE macros. (e.g., X_STEP_DIR)
- *    The FastIO headers map digital pins to their ports and functions.
- *
- *  - Analog Input number if used by analogRead or DAC. (e.g., TEMP_n_PIN)
- *    These numbers are the same in any pin mapping.
- */
+#ifndef PINS_H
+#define PINS_H
 
-#ifndef __PINS_H__
-#define __PINS_H__
-
-//
-// RAMPS 1.3 / 1.4 - ATmega1280, ATmega2560
-//
-
-#if MB(RAMPS_OLD)
+#if MB(GEN7_CUSTOM)
+  #include "pins_GEN7_CUSTOM.h"
+#elif MB(GEN7_12)
+  #include "pins_GEN7_12.h"
+#elif MB(GEN7_13)
+  #include "pins_GEN7_13.h"
+#elif MB(GEN7_14)
+  #include "pins_GEN7_14.h"
+#elif MB(CNCONTROLS_11)
+  #include "pins_CNCONTROLS_11.h"
+#elif MB(CNCONTROLS_12)
+  #include "pins_CNCONTROLS_12.h"
+#elif MB(CHEAPTRONIC)
+  #include "pins_CHEAPTRONIC.h"
+#elif MB(CHEAPTRONIC_V2)
+  #include "pins_CHEAPTRONICv2.h"
+#elif MB(SETHI)
+  #include "pins_SETHI.h"
+#elif MB(MIGHTYBOARD_REVE)
+  #include "pins_MIGHTYBOARD_REVE.h"
+#elif MB(RAMPS_OLD)
   #include "pins_RAMPS_OLD.h"
 #elif MB(RAMPS_13_EFB)
   #define IS_RAMPS_EFB
@@ -71,184 +75,105 @@
 #elif MB(RAMPS_14_SF)
   #define IS_RAMPS_SF
   #include "pins_RAMPS.h"
-#elif MB(RAMPS_PLUS_EFB)
-  #define IS_RAMPS_EFB
-  #include "pins_RAMPS_PLUS.h"
-#elif MB(RAMPS_PLUS_EEB)
-  #define IS_RAMPS_EEB
-  #include "pins_RAMPS_PLUS.h"
-#elif MB(RAMPS_PLUS_EFF)
-  #define IS_RAMPS_EFF
-  #include "pins_RAMPS_PLUS.h"
-#elif MB(RAMPS_PLUS_EEF)
-  #define IS_RAMPS_EEF
-  #include "pins_RAMPS_PLUS.h"
-#elif MB(RAMPS_PLUS_SF)
-  #define IS_RAMPS_SF
-  #include "pins_RAMPS_PLUS.h"
-
-//
-// RAMPS Derivatives - ATmega1280, ATmega2560
-//
-
-#elif MB(3DRAG)
-  #include "pins_3DRAG.h"             // ATmega1280, ATmega2560
-#elif MB(K8200)
-  #include "pins_K8200.h"             // ATmega1280, ATmega2560 (3DRAG)
-#elif MB(K8400)
-  #include "pins_K8400.h"             // ATmega1280, ATmega2560 (3DRAG)
-#elif MB(BAM_DICE)
-  #include "pins_RAMPS.h"             // ATmega1280, ATmega2560
-#elif MB(BAM_DICE_DUE)
-  #include "pins_BAM_DICE_DUE.h"      // ATmega1280, ATmega2560
-#elif MB(MKS_BASE)
-  #include "pins_MKS_BASE.h"          // ATmega1280, ATmega2560
-#elif MB(MKS_13)
-  #include "pins_MKS_13.h"            // ATmega1280, ATmega2560
-#elif MB(MKS_GEN_L)
-  #include "pins_MKS_GEN_L.h"         // ATmega1280, ATmega2560
-#elif MB(ZRIB_V20)
-  #include "pins_ZRIB_V20.h"          // ATmega1280, ATmega2560 (MKS_13)
-#elif MB(FELIX2)
-  #include "pins_FELIX2.h"            // ATmega1280, ATmega2560
-#elif MB(RIGIDBOARD)
-  #include "pins_RIGIDBOARD.h"        // ATmega1280, ATmega2560
-#elif MB(RIGIDBOARD_V2)
-  #include "pins_RIGIDBOARD_V2.h"     // ATmega1280, ATmega2560
-#elif MB(SAINSMART_2IN1)
-  #include "pins_SAINSMART_2IN1.h"    // ATmega1280, ATmega2560
-#elif MB(ULTIMAKER)
-  #include "pins_ULTIMAKER.h"         // ATmega1280, ATmega2560
-#elif MB(ULTIMAKER_OLD)
-  #include "pins_ULTIMAKER_OLD.h"     // ATmega1280, ATmega2560
-#elif MB(AZTEEG_X3)
-  #include "pins_AZTEEG_X3.h"         // ATmega2560
-#elif MB(AZTEEG_X3_PRO)
-  #include "pins_AZTEEG_X3_PRO.h"     // ATmega2560
-#elif MB(ULTIMAIN_2)
-  #include "pins_ULTIMAIN_2.h"        // ATmega2560
-#elif MB(RUMBA)
-  #include "pins_RUMBA.h"             // ATmega2560
-#elif MB(BQ_ZUM_MEGA_3D)
-  #include "pins_BQ_ZUM_MEGA_3D.h"    // ATmega2560
-#elif MB(MAKEBOARD_MINI)
-  #include "pins_MAKEBOARD_MINI.h"    // ATmega2560
-
-//
-// Other ATmega1280, ATmega2560
-//
-
-#elif MB(CNCONTROLS_11)
-  #include "pins_CNCONTROLS_11.h"     // ATmega1280, ATmega2560
-#elif MB(CNCONTROLS_12)
-  #include "pins_CNCONTROLS_12.h"     // ATmega1280, ATmega2560
-#elif MB(MIGHTYBOARD_REVE)
-  #include "pins_MIGHTYBOARD_REVE.h"  // ATmega1280, ATmega2560
-#elif MB(CHEAPTRONIC)
-  #include "pins_CHEAPTRONIC.h"       // ATmega2560
-#elif MB(CHEAPTRONIC_V2)
-  #include "pins_CHEAPTRONICv2.h"     // ATmega2560
-#elif MB(MEGATRONICS)
-  #include "pins_MEGATRONICS.h"       // ATmega2560
-#elif MB(MEGATRONICS_2)
-  #include "pins_MEGATRONICS_2.h"     // ATmega2560
-#elif MB(MEGATRONICS_3) || MB(MEGATRONICS_31)
-  #include "pins_MEGATRONICS_3.h"     // ATmega2560
-#elif MB(RAMBO)
-  #include "pins_RAMBO.h"             // ATmega2560
-#elif MB(MINIRAMBO) || MB(MINIRAMBO_10A)
-  #include "pins_MINIRAMBO.h"         // ATmega2560
-#elif MB(ELEFU_3)
-  #include "pins_ELEFU_3.h"           // ATmega2560
-#elif MB(LEAPFROG)
-  #include "pins_LEAPFROG.h"          // ATmega1280, ATmega2560
-#elif MB(MEGACONTROLLER)
-  #include "pins_MEGACONTROLLER.h"    // ATmega2560
-#elif MB(SCOOVO_X9H)
-  #include "pins_SCOOVO_X9H.h"        // ATmega2560
-#elif MB(GT2560_REV_A)
-  #include "pins_GT2560_REV_A.h"      // ATmega1280, ATmega2560
-#elif MB(GT2560_REV_A_PLUS)
-  #include "pins_GT2560_REV_A_PLUS.h" // ATmega1280, ATmega2560
-#elif MB(SILVER_GATE)
-  #include "pins_SILVER_GATE.h"       // ATmega2561
-
-//
-// ATmega1281, ATmega2561
-//
-
-#elif MB(MINITRONICS)
-  #include "pins_MINITRONICS.h"       // ATmega1281
-
-//
-// Sanguinololu and Derivatives - ATmega644P, ATmega1284P
-//
-
-#elif MB(SANGUINOLOLU_11)
-  #include "pins_SANGUINOLOLU_11.h"   // ATmega644P, ATmega1284P
-#elif MB(SANGUINOLOLU_12)
-  #include "pins_SANGUINOLOLU_12.h"   // ATmega644P, ATmega1284P
-#elif MB(MELZI)
-  #include "pins_MELZI.h"             // ATmega644P, ATmega1284P
-#elif MB(MELZI_MAKR3D)
-  #include "pins_MELZI_MAKR3D.h"      // ATmega644P, ATmega1284P
-#elif MB(MELZI_CREALITY)
-  #include "pins_MELZI_CREALITY.h"    // ATmega644P, ATmega1284P
-#elif MB(STB_11)
-  #include "pins_STB_11.h"            // ATmega644P, ATmega1284P
-#elif MB(AZTEEG_X1)
-  #include "pins_AZTEEG_X1.h"         // ATmega644P, ATmega1284P
-
-//
-// Other ATmega644P, ATmega644, ATmega1284P
-//
-
-#elif MB(GEN3_MONOLITHIC)
-  #include "pins_GEN3_MONOLITHIC.h"   // ATmega644P
-#elif MB(GEN3_PLUS)
-  #include "pins_GEN3_PLUS.h"         // ATmega644P, ATmega1284P
 #elif MB(GEN6)
-  #include "pins_GEN6.h"              // ATmega644P, ATmega1284P
+  #include "pins_GEN6.h"
 #elif MB(GEN6_DELUXE)
-  #include "pins_GEN6_DELUXE.h"       // ATmega644P, ATmega1284P
-#elif MB(GEN7_CUSTOM)
-  #include "pins_GEN7_CUSTOM.h"       // ATmega644P, ATmega644, ATmega1284P
-#elif MB(GEN7_12)
-  #include "pins_GEN7_12.h"           // ATmega644P, ATmega644, ATmega1284P
-#elif MB(GEN7_13)
-  #include "pins_GEN7_13.h"           // ATmega644P, ATmega644, ATmega1284P
-#elif MB(GEN7_14)
-  #include "pins_GEN7_14.h"           // ATmega644P, ATmega644, ATmega1284P
-#elif MB(OMCA_A)
-  #include "pins_OMCA_A.h"            // ATmega644
-#elif MB(OMCA)
-  #include "pins_OMCA.h"              // ATmega644P, ATmega644
-#elif MB(ANET_10)
-  #include "pins_ANET_10.h"           // ATmega1284P
-#elif MB(SETHI)
-  #include "pins_SETHI.h"             // ATmega644P, ATmega644, ATmega1284P
-
-//
-// Teensyduino - AT90USB1286, AT90USB1286P
-//
-
+  #include "pins_GEN6_DELUXE.h"
+#elif MB(SANGUINOLOLU_11)
+  #include "pins_SANGUINOLOLU_11.h"
+#elif MB(SANGUINOLOLU_12)
+  #include "pins_SANGUINOLOLU_12.h"
+#elif MB(MELZI)
+  #include "pins_MELZI.h"
+#elif MB(STB_11)
+  #include "pins_STB_11.h"
+#elif MB(AZTEEG_X1)
+  #include "pins_AZTEEG_X1.h"
+#elif MB(MELZI_MAKR3D)
+  #include "pins_MELZI_MAKR3D.h"
+#elif MB(AZTEEG_X3)
+  #include "pins_AZTEEG_X3.h"
+#elif MB(AZTEEG_X3_PRO)
+  #include "pins_AZTEEG_X3_PRO.h"
+#elif MB(ULTIMAKER)
+  #include "pins_ULTIMAKER.h"
+#elif MB(ULTIMAKER_OLD)
+  #include "pins_ULTIMAKER_OLD.h"
+#elif MB(ULTIMAIN_2)
+  #include "pins_ULTIMAIN_2.h"
+#elif MB(3DRAG)
+  #include "pins_3DRAG.h"
+#elif MB(K8200)
+  #include "pins_K8200.h"
+#elif MB(K8400)
+  #include "pins_K8400.h"
 #elif MB(TEENSYLU)
-  #include "pins_TEENSYLU.h"          // AT90USB1286, AT90USB1286P
+  #include "pins_TEENSYLU.h"
+#elif MB(RUMBA)
+  #include "pins_RUMBA.h"
 #elif MB(PRINTRBOARD)
-  #include "pins_PRINTRBOARD.h"       // AT90USB1286
+  #include "pins_PRINTRBOARD.h"
 #elif MB(PRINTRBOARD_REVF)
-  #include "pins_PRINTRBOARD_REVF.h"  // AT90USB1286
+  #include "pins_PRINTRBOARD_REVF.h"
 #elif MB(BRAINWAVE)
-  #include "pins_BRAINWAVE.h"         // AT90USB646
+  #include "pins_BRAINWAVE.h"
 #elif MB(BRAINWAVE_PRO)
-  #include "pins_BRAINWAVE_PRO.h"     // AT90USB1286
+  #include "pins_BRAINWAVE_PRO.h"
 #elif MB(SAV_MKI)
-  #include "pins_SAV_MKI.h"           // AT90USB1286
+  #include "pins_SAV_MKI.h"
 #elif MB(TEENSY2)
-  #include "pins_TEENSY2.h"           // AT90USB1286
+  #include "pins_TEENSY2.h"
+#elif MB(GEN3_PLUS)
+  #include "pins_GEN3_PLUS.h"
+#elif MB(GEN3_MONOLITHIC)
+  #include "pins_GEN3_MONOLITHIC.h"
+#elif MB(MEGATRONICS)
+  #include "pins_MEGATRONICS.h"
+#elif MB(MINITRONICS)
+  #include "pins_MINITRONICS.h"
+#elif MB(MEGATRONICS_2)
+  #include "pins_MEGATRONICS_2.h"
+#elif MB(MEGATRONICS_3)
+  #include "pins_MEGATRONICS_3.h"
+#elif MB(MEGATRONICS_31)
+  #define MEGATRONICS_31
+  #include "pins_MEGATRONICS_3.h"
+#elif MB(OMCA_A)
+  #include "pins_OMCA_A.h"
+#elif MB(OMCA)
+  #include "pins_OMCA.h"
+#elif MB(RAMBO)
+  #include "pins_RAMBO.h"
+#elif MB(MINIRAMBO)
+  #include "pins_MINIRAMBO.h"
+#elif MB(ELEFU_3)
+  #include "pins_ELEFU_3.h"
 #elif MB(5DPRINT)
-  #include "pins_5DPRINT.h"           // AT90USB1286
-
+  #include "pins_5DPRINT.h"
+#elif MB(LEAPFROG)
+  #include "pins_LEAPFROG.h"
+#elif MB(BAM_DICE)
+  #include "pins_RAMPS.h"
+#elif MB(BAM_DICE_DUE)
+  #include "pins_BAM_DICE_DUE.h"
+#elif MB(FELIX2)
+  #include "pins_FELIX2.h"
+#elif MB(MKS_BASE)
+  #include "pins_MKS_BASE.h"
+#elif MB(RIGIDBOARD)
+  #include "pins_RIGIDBOARD.h"
+#elif MB(RIGIDBOARD_V2)
+  #include "pins_RIGIDBOARD_V2.h"
+#elif MB(MEGACONTROLLER)
+  #include "pins_MEGACONTROLLER.h"
+#elif MB(BQ_ZUM_MEGA_3D)
+  #include "pins_BQ_ZUM_MEGA_3D.h"
+#elif MB(SCOOVO_X9H)
+  #include "pins_SCOOVO_X9H.h"
+#elif MB(MKS_13)
+  #include "pins_MKS_13.h"
+#elif MB(SAINSMART_2IN1)
+  #include "pins_SAINSMART_2IN1.h"
 #else
   #error "Unknown MOTHERBOARD value set in Configuration.h"
 #endif
@@ -272,62 +197,17 @@
 #ifndef Z_MS2_PIN
   #define Z_MS2_PIN -1
 #endif
-#ifndef E0_STEP_PIN
-  #define E0_STEP_PIN -1
-#endif
-#ifndef E0_DIR_PIN
-  #define E0_DIR_PIN -1
-#endif
-#ifndef E0_ENABLE_PIN
-  #define E0_ENABLE_PIN -1
-#endif
 #ifndef E0_MS1_PIN
   #define E0_MS1_PIN -1
 #endif
 #ifndef E0_MS2_PIN
   #define E0_MS2_PIN -1
 #endif
-#ifndef E1_STEP_PIN
-  #define E1_STEP_PIN -1
-#endif
-#ifndef E1_DIR_PIN
-  #define E1_DIR_PIN -1
-#endif
-#ifndef E1_ENABLE_PIN
-  #define E1_ENABLE_PIN -1
-#endif
 #ifndef E1_MS1_PIN
   #define E1_MS1_PIN -1
 #endif
 #ifndef E1_MS2_PIN
   #define E1_MS2_PIN -1
-#endif
-#ifndef E2_STEP_PIN
-  #define E2_STEP_PIN -1
-#endif
-#ifndef E2_DIR_PIN
-  #define E2_DIR_PIN -1
-#endif
-#ifndef E2_ENABLE_PIN
-  #define E2_ENABLE_PIN -1
-#endif
-#ifndef E3_STEP_PIN
-  #define E3_STEP_PIN -1
-#endif
-#ifndef E3_DIR_PIN
-  #define E3_DIR_PIN -1
-#endif
-#ifndef E3_ENABLE_PIN
-  #define E3_ENABLE_PIN -1
-#endif
-#ifndef E4_STEP_PIN
-  #define E4_STEP_PIN -1
-#endif
-#ifndef E4_DIR_PIN
-  #define E4_DIR_PIN -1
-#endif
-#ifndef E4_ENABLE_PIN
-  #define E4_ENABLE_PIN -1
 #endif
 
 #ifndef FAN_PIN
@@ -341,16 +221,6 @@
 #endif
 #ifndef CONTROLLER_FAN_PIN
   #define CONTROLLER_FAN_PIN  -1
-#endif
-
-#ifndef FANMUX0_PIN
-  #define FANMUX0_PIN -1
-#endif
-#ifndef FANMUX1_PIN
-  #define FANMUX1_PIN -1
-#endif
-#ifndef FANMUX2_PIN
-  #define FANMUX2_PIN -1
 #endif
 
 #ifndef HEATER_0_PIN
@@ -446,17 +316,7 @@
 #define _E3_PINS
 #define _E4_PINS
 
-#if ENABLED(SWITCHING_EXTRUDER)
-                      // Tools 0 and 1 use E0
-  #if EXTRUDERS > 2   // Tools 2 and 3 use E1
-    #undef _E1_PINS
-    #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, E1_MS1_PIN, E1_MS2_PIN,
-    #if EXTRUDERS > 4 // Tools 4 and 5 use E2
-      #undef _E2_PINS
-      #define _E2_PINS E2_STEP_PIN, E2_DIR_PIN, E2_ENABLE_PIN,
-    #endif
-  #endif
-#elif EXTRUDERS > 1
+#if EXTRUDERS > 1
   #undef _E1_PINS
   #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, E1_MS1_PIN, E1_MS2_PIN,
   #if EXTRUDERS > 2
@@ -584,19 +444,6 @@
   #define Z_MIN_PIN          -1
 #endif
 
-#ifndef LCD_PINS_D4
-  #define LCD_PINS_D4 -1
-#endif
-#ifndef LCD_PINS_D5
-  #define LCD_PINS_D5 -1
-#endif
-#ifndef LCD_PINS_D6
-  #define LCD_PINS_D6 -1
-#endif
-#ifndef LCD_PINS_D7
-  #define LCD_PINS_D7 -1
-#endif
-
 //
 // Dual X-carriage, Dual Y, Dual Z support
 //
@@ -614,7 +461,7 @@
     #define X2_STEP_PIN   _EPIN(E_STEPPERS, STEP)
     #define X2_DIR_PIN    _EPIN(E_STEPPERS, DIR)
     #define X2_ENABLE_PIN _EPIN(E_STEPPERS, ENABLE)
-    #if E_STEPPERS > 4 || !PIN_EXISTS(X2_ENABLE)
+    #if X2_ENABLE_PIN == 0
       #error "No E stepper plug left for X2!"
     #endif
   #endif
@@ -631,7 +478,7 @@
     #define Y2_STEP_PIN   _EPIN(Y2_E_INDEX, STEP)
     #define Y2_DIR_PIN    _EPIN(Y2_E_INDEX, DIR)
     #define Y2_ENABLE_PIN _EPIN(Y2_E_INDEX, ENABLE)
-    #if Y2_E_INDEX > 4 || !PIN_EXISTS(Y2_ENABLE)
+    #if Y2_ENABLE_PIN == 0
       #error "No E stepper plug left for Y2!"
     #endif
   #endif
@@ -648,7 +495,7 @@
     #define Z2_STEP_PIN   _EPIN(Z2_E_INDEX, STEP)
     #define Z2_DIR_PIN    _EPIN(Z2_E_INDEX, DIR)
     #define Z2_ENABLE_PIN _EPIN(Z2_E_INDEX, ENABLE)
-    #if Z2_E_INDEX > 4 || !PIN_EXISTS(Z2_ENABLE)
+    #if Z2_ENABLE_PIN == 0
       #error "No E stepper plug left for Z2!"
     #endif
   #endif
@@ -688,10 +535,19 @@
   #define AVR_MOSI_PIN 51
   #define AVR_SS_PIN   53
 #elif defined(__AVR_AT90USB1287__) || defined(__AVR_AT90USB1286__) || defined(__AVR_AT90USB646__) || defined(__AVR_AT90USB647__)
-  #define AVR_SCK_PIN  21
-  #define AVR_MISO_PIN 23
-  #define AVR_MOSI_PIN 22
-  #define AVR_SS_PIN   20
+  #if ENABLED(AT90USBxx_TEENSYPP_ASSIGNMENTS)
+    // Teensy pin assignments
+    #define AVR_SCK_PIN  21
+    #define AVR_MISO_PIN 23
+    #define AVR_MOSI_PIN 22
+    #define AVR_SS_PIN   20
+  #else
+    // Traditional pin assignments
+    #define AVR_SCK_PIN  9
+    #define AVR_MISO_PIN 11
+    #define AVR_MOSI_PIN 10
+    #define AVR_SS_PIN   8
+  #endif
 #elif defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2561__)
   #define AVR_SCK_PIN  10
   #define AVR_MISO_PIN 12
@@ -712,21 +568,4 @@
   #define SS_PIN   AVR_SS_PIN
 #endif
 
-#undef HEATER_1_PIN
-#define HEATER_1_PIN -1
-#undef PRINTER_HEAD_EASY_CONSTANT_FAN_PIN
-#define PRINTER_HEAD_EASY_CONSTANT_FAN_PIN 7
-#undef X_MAX_PIN
-#define X_MAX_PIN -1
-#undef X_MIN_PIN
-#define X_MIN_PIN 2
-#undef Y_MAX_PIN
-#define Y_MAX_PIN 3
-#undef Y_MIN_MIN
-#define Y_MIN_MIN -1
-#undef Z_MAX_PIN
-#define Z_MAX_PIN -1
-#undef Z_MIN_PIN
-#define Z_MIN_PIN 15
-
-#endif // __PINS_H
+#endif //__PINS_H

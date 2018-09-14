@@ -24,14 +24,13 @@
  * Portuguese (Brazil)
  *
  * LCD Menu Messages
- * See also http://marlinfw.org/docs/development/lcd_language.html
+ * See also https://github.com/MarlinFirmware/Marlin/wiki/LCD-Language
  *
  */
 #ifndef LANGUAGE_PT_BR_H
 #define LANGUAGE_PT_BR_H
 
 #define DISPLAY_CHARSET_ISO10646_1
-#define NOT_EXTENDED_ISO10646_1_5X7
 
 #define WELCOME_MSG                         MACHINE_NAME " pronto."
 #define MSG_SD_INSERTED                     "Cartao inserido"
@@ -43,6 +42,7 @@
 #define MSG_LEVEL_BED_HOMING                "Homing XYZ"
 #define MSG_LEVEL_BED_WAITING               "Click to Begin"
 #define MSG_LEVEL_BED_DONE                  "Leveling Done!"
+#define MSG_LEVEL_BED_CANCEL                "Cancel"
 #define MSG_SET_HOME_OFFSETS                "Ajustar Jogo"
 #define MSG_HOME_OFFSETS_APPLIED            "Offsets applied"
 #define MSG_SET_ORIGIN                      "Ajustar orig."
@@ -87,7 +87,6 @@
 #define MSG_PID_D                           "PID-D"
 #define MSG_PID_C                           "PID-C"
 #define MSG_ACC                             "Acc"
-#define MSG_JERK                            "Jogo"
 #define MSG_VX_JERK                         "jogo VX"
 #define MSG_VY_JERK                         "jogo VY"
 #define MSG_VZ_JERK                         "jogo VZ"
@@ -98,7 +97,6 @@
 #define MSG_AMAX                            "Amax "
 #define MSG_A_RETRACT                       "Retrair A"
 #define MSG_A_TRAVEL                        "A-movimento"
-#define MSG_STEPS_PER_MM                    "Passo/mm"
 #define MSG_XSTEPS                          "Passo X/mm"
 #define MSG_YSTEPS                          "Passo Y/mm"
 #define MSG_ZSTEPS                          "Passo Z/mm"

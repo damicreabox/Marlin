@@ -144,6 +144,7 @@ vc-fileutils.settings
 CMakeLists.txt
 Marlin/CMakeLists.txt
 CMakeListsPrivate.txt
+cmake
 
 #CLion
 cmake-build-*

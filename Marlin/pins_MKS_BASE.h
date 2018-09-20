@@ -48,13 +48,3 @@
 #define SPINDLE_DIR_PIN          19
 
 #include "pins_RAMPS.h"
-
-//
-// Dagoma DiscoEasy default wiring is not the standard one
-// 
-#undef X_MIN_PIN
-#define X_MIN_PIN 2
-#undef Y_MAX_PIN
-#define Y_MAX_PIN 3
-#undef Z_MIN_PIN
-#define Z_MIN_PIN 15

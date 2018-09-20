@@ -35,7 +35,7 @@
   /**
    * Marlin release version identifier
    */
-  #define SHORT_BUILD_VERSION "1.1.9"
+  #define SHORT_BUILD_VERSION "1.1.9 DE200 Expert"
 
   /**
    * Verbose version identifier which should contain a reference to the location

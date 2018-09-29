@@ -236,7 +236,7 @@ static void updateTemperaturesFromRawValues();
     float workKp = 0, workKi = 0, workKd = 0;
     float max = 0, min = 10000;
 
-    #if HAS_AUTO_FAN
+    #if HAS_AUTO_FAN || ENABLED(IS_MONO_FAN) || ENABLED(PRINTER_HEAD_EASY)
       millis_t next_auto_fan_check_ms = temp_ms + 2500UL;
     #endif
 
@@ -290,9 +290,19 @@ static void updateTemperaturesFromRawValues();
         max = max(max, input);
         min = min(min, input);
 
-        #if HAS_AUTO_FAN
+        #if HAS_AUTO_FAN || ENABLED(IS_MONO_FAN) || ENABLED(PRINTER_HEAD_EASY)
           if (ELAPSED(ms, next_auto_fan_check_ms)) {
+            #if HAS_AUTO_FAN
             checkExtruderAutoFans();
+            #endif
+            #if ENABLED(IS_MONO_FAN)
+            digitalWrite(FAN_PIN, MONO_FAN_MIN_PWM);
+            analogWrite(FAN_PIN, MONO_FAN_MIN_PWM);
+            #endif
+            #if ENABLED(PRINTER_HEAD_EASY)
+            digitalWrite(PRINTER_HEAD_EASY_CONSTANT_FAN_PIN, 255);
+            analogWrite(PRINTER_HEAD_EASY_CONSTANT_FAN_PIN, 255);
+            #endif
             next_auto_fan_check_ms = ms + 2500UL;
           }
         #endif
@@ -558,6 +568,7 @@ inline void _temp_error(int e, const char* serial_msg, const char* lcd_msg) {
   }
   #if DISABLED(BOGUS_TEMPERATURE_FAILSAFE_OVERRIDE)
     if (!killed) {
+      SERIAL_ECHOLNPGM("Ca killeu");
       Running = false;
       killed = true;
       kill(lcd_msg);
@@ -1070,6 +1081,9 @@ void tp_init() {
   #if ENABLED(FILAMENT_WIDTH_SENSOR)
     ANALOG_SELECT(FILWIDTH_PIN);
   #endif
+  #if ENABLED(Z_MIN_MAGIC)
+    ANALOG_SELECT(15);
+  #endif
 
   #if HAS_AUTO_FAN_0
     pinMode(EXTRUDER_0_AUTO_FAN_PIN, OUTPUT);
@@ -1377,6 +1391,64 @@ static void set_current_temp_raw() {
   temp_meas_ready = true;
 }
 
+#if ENABLED( Z_MIN_MAGIC )
+  bool enable_z_magic_probe = false;
+  bool enable_z_magic_tap = false;
+
+  float z_magic_raw_value = 0; // Extern
+  float z_magic_previous = 0; // Extern
+  float z_magic_bias = 0; // Extern
+  float z_magic_bias_delta = 0; // Extern
+  bool z_magic_hit_flag = false; // Extern
+
+  millis_t z_magic_calibration_timeout;
+
+  void reset_z_magic() {
+    z_magic_previous = z_magic_raw_value;
+    z_magic_bias = 0.0;
+    z_magic_bias_delta = 0.0;
+    z_magic_calibration_timeout = millis() + 100UL;
+    z_magic_hit_flag = false;
+  }
+
+  inline void update_z_magic( ) {
+    
+    millis_t now = millis();
+
+    z_magic_raw_value = float(ADC);
+
+    if (enable_z_magic_probe || enable_z_magic_tap) {
+
+      z_magic_bias = z_magic_raw_value - z_magic_previous;
+      z_magic_previous = z_magic_raw_value;
+      z_magic_bias_delta += z_magic_bias;
+
+      // FIX: Old Neva does not support bias accumulator detection
+      /*
+      if (!z_magic_hit_flag && z_magic_bias_delta < -10.0) {
+        z_magic_hit_flag = true;
+      }
+      */
+      
+      // FIX: Should work on both Magis and old Neva
+      if (!z_magic_hit_flag && (z_magic_bias < -8.0 || z_magic_bias_delta < -15.0 || z_magic_bias_delta > 15.0)) {
+        z_magic_hit_flag = true;
+      } 
+
+      if (z_magic_bias < -4.0 || z_magic_bias > 4.0) {
+        z_magic_calibration_timeout = now + 250UL;
+      }
+
+      /* Cycle reset */
+      if (ELAPSED(now, z_magic_calibration_timeout)) {
+        z_magic_bias_delta = 0.0;
+        z_magic_calibration_timeout = now + 100UL; // Re-Arm anyway
+      }
+    }
+  }
+
+#endif
+
 /**
  * Timer 0 is shared with millies
  *  - Manage PWM to all the heaters and fan
@@ -1647,12 +1719,18 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       lcd_buttons_update();
       temp_state = MeasureTemp_BED;
+      #if ENABLED( Z_MIN_MAGIC )
+        START_ADC(15);
+      #endif
       break;
     case MeasureTemp_BED:
       #if HAS_TEMP_BED
         raw_temp_bed_value += ADC;
       #endif
       temp_state = PrepareTemp_1;
+      #if ENABLED( Z_MIN_MAGIC )
+        update_z_magic();
+      #endif
       break;
 
     case PrepareTemp_1:
@@ -1661,12 +1739,18 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       lcd_buttons_update();
       temp_state = MeasureTemp_1;
+      // #if ENABLED( Z_MIN_MAGIC )
+      //   START_ADC(15);
+      // #endif
       break;
     case MeasureTemp_1:
       #if HAS_TEMP_1
         raw_temp_value[1] += ADC;
       #endif
       temp_state = PrepareTemp_2;
+      // #if ENABLED( Z_MIN_MAGIC )
+      //   update_z_magic();
+      // #endif
       break;
 
     case PrepareTemp_2:
@@ -1675,12 +1759,18 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       lcd_buttons_update();
       temp_state = MeasureTemp_2;
+      #if ENABLED( Z_MIN_MAGIC )
+        START_ADC(15);
+      #endif
       break;
     case MeasureTemp_2:
       #if HAS_TEMP_2
         raw_temp_value[2] += ADC;
       #endif
       temp_state = PrepareTemp_3;
+      #if ENABLED( Z_MIN_MAGIC )
+        update_z_magic();
+      #endif
       break;
 
     case PrepareTemp_3:
@@ -1689,12 +1779,18 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       lcd_buttons_update();
       temp_state = MeasureTemp_3;
+      // #if ENABLED( Z_MIN_MAGIC )
+      //   START_ADC(15);
+      // #endif
       break;
     case MeasureTemp_3:
       #if HAS_TEMP_3
         raw_temp_value[3] += ADC;
       #endif
       temp_state = Prepare_FILWIDTH;
+      // #if ENABLED( Z_MIN_MAGIC )
+      //   update_z_magic();
+      // #endif
       break;
 
     case Prepare_FILWIDTH:
@@ -1703,6 +1799,9 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       lcd_buttons_update();
       temp_state = Measure_FILWIDTH;
+      #if ENABLED( Z_MIN_MAGIC )
+        START_ADC(15);
+      #endif
       break;
     case Measure_FILWIDTH:
       #if ENABLED(FILAMENT_WIDTH_SENSOR)
@@ -1714,6 +1813,9 @@ ISR(TIMER0_COMPB_vect) {
       #endif
       temp_state = PrepareTemp_0;
       temp_count++;
+      #if ENABLED( Z_MIN_MAGIC )
+        update_z_magic();
+      #endif
       break;
 
     case StartupDelay:

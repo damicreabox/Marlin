@@ -186,4 +186,16 @@ FORCE_INLINE void autotempShutdown() {
   #endif
 }
 
+#if ENABLED( Z_MIN_MAGIC )
+  extern float z_magic_raw_value;
+  extern float z_magic_previous;
+  extern float z_magic_bias;
+  extern float z_magic_bias_delta;
+  extern bool z_magic_hit_flag;
+
+  extern bool enable_z_magic_probe;
+  extern bool enable_z_magic_tap;
+  void reset_z_magic();
+#endif
+
 #endif // TEMPERATURE_H

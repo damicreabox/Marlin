@@ -335,7 +335,7 @@
 // Bed temperature must be close to target for this long before M190 returns success
 #define TEMP_BED_RESIDENCY_TIME 10  // (seconds)
 #define TEMP_BED_HYSTERESIS 3       // (degC) range of +/- temperatures considered "close" to the target one
-#define TEMP_BED_WINDOW     1       // (degC) Window around target to start the residency timer x degC early.
+#define TEMP_BED_WINDOW 3
 
 // The minimal temperature defines the temperature below which the heater will not be enabled It is used
 // to check that the wiring to the thermistor is not broken.
@@ -380,9 +380,14 @@
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
   // Ultimaker
-  #define DEFAULT_Kp 22.2
-  #define DEFAULT_Ki 1.08
-  #define DEFAULT_Kd 114
+  //#define DEFAULT_Kp 22.2
+  //#define DEFAULT_Ki 1.08
+  //#define DEFAULT_Kd 114
+
+  // Dagoma
+  #define  DEFAULT_Kp 32.48
+  #define  DEFAULT_Ki 6.4
+  #define  DEFAULT_Kd 41.25
 
   // MakerGear
   //#define DEFAULT_Kp 7.0
@@ -431,9 +436,9 @@
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define DEFAULT_bedKp 10.00
-  #define DEFAULT_bedKi .023
-  #define DEFAULT_bedKd 305.4
+  #define DEFAULT_bedKp 182.79
+  #define DEFAULT_bedKi 14.84
+  #define DEFAULT_bedKd 563.01
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -615,7 +620,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 4, 170 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 4, 66 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -623,7 +628,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 9000, 3000, 100, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 3000, 1000, 20, 10000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -927,12 +932,12 @@
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  * By default the firmware assumes HIGH=FILAMENT PRESENT.
  */
-//#define FILAMENT_RUNOUT_SENSOR
+#define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1     // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
-  #define FIL_RUNOUT_INVERTING false // set to true to invert the logic of the sensor.
+  #define FIL_RUNOUT_INVERTING true // set to true to invert the logic of the sensor.
   #define FIL_RUNOUT_PULLUP          // Use internal pullup for filament runout pins.
-  #define FILAMENT_RUNOUT_SCRIPT "M600"
+  #define FILAMENT_RUNOUT_SCRIPT "M600 I-1 U5 V195 X195 Y195"
 #endif
 
 //===========================================================================
@@ -1219,6 +1224,18 @@
 //============================= Additional Features ===========================
 //=============================================================================
 
+// @section more
+
+// Custom M code points
+#define CUSTOM_M_CODES
+#if ENABLED(CUSTOM_M_CODES)
+  #if ENABLED(AUTO_BED_LEVELING_FEATURE)
+    #define CUSTOM_M_CODE_SET_Z_PROBE_OFFSET 851
+    #define Z_PROBE_OFFSET_RANGE_MIN -20
+    #define Z_PROBE_OFFSET_RANGE_MAX 20
+  #endif
+#endif
+
 // @section extras
 
 //
@@ -1326,7 +1343,7 @@
  * Attention: EXPERIMENTAL. G-code arguments may change.
  *
  */
-//#define NOZZLE_CLEAN_FEATURE
+#define NOZZLE_CLEAN_FEATURE
 
 #if ENABLED(NOZZLE_CLEAN_FEATURE)
   // Default number of pattern repetitions

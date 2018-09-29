@@ -866,6 +866,9 @@
   #define AVR_SS_PIN   16
 #endif
 
+#undef PRINTER_HEAD_EASY_CONSTANT_FAN_PIN
+#define PRINTER_HEAD_EASY_CONSTANT_FAN_PIN 7
+
 #ifndef SCK_PIN
   #define SCK_PIN  AVR_SCK_PIN
 #endif

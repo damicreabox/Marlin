@@ -24,10 +24,9 @@
  * Melzi pin assignments
  */
 
-#define SANGUINOLOLU_V_1_2
-
-#if defined(__AVR_ATmega1284P__)
-  #define LARGE_FLASH true
+#ifndef BOARD_NAME
+  #define BOARD_NAME "Melzi"
 #endif
 
-#include "pins_SANGUINOLOLU_11.h"
+#define IS_MELZI
+#include "pins_SANGUINOLOLU_12.h"

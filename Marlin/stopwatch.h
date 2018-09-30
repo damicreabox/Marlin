@@ -1,4 +1,4 @@
-/*
+/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -23,16 +23,11 @@
 #ifndef STOPWATCH_H
 #define STOPWATCH_H
 
-#include "macros.h"
-
 // Print debug messages with M111 S2 (Uses 156 bytes of PROGMEM)
 //#define DEBUG_STOPWATCH
 
-enum StopwatchStatus {
-  STPWTCH_STOPPED,
-  STPWTCH_RUNNING,
-  STPWTCH_PAUSED
-};
+#include "macros.h"
+#include "types.h"
 
 /**
  * @brief Stopwatch class
@@ -41,74 +36,89 @@ enum StopwatchStatus {
  */
 class Stopwatch {
   private:
-    StopwatchStatus status;
-    uint16_t accumulator;
-    uint32_t startTimestamp;
-    uint32_t stopTimestamp;
+    enum State : char {
+      STOPPED,
+      RUNNING,
+      PAUSED
+    };
+
+    static Stopwatch::State state;
+    static millis_t accumulator;
+    static millis_t startTimestamp;
+    static millis_t stopTimestamp;
 
   public:
     /**
-     * @brief Class constructor
+     * @brief Initialize the stopwatch
      */
-    Stopwatch();
+    FORCE_INLINE static void init() { reset(); }
 
     /**
-     * @brief Stops the stopwatch
-     * @details Stops the running timer, it will silently ignore the request if
-     * no timer is currently running.
+     * @brief Stop the stopwatch
+     * @details Stop the running timer. Silently ignore the request if
+     *          no timer is running.
+     * @return true on success
      */
-    void stop();
+    static bool stop();
 
     /**
-     * @brief Pauses the stopwatch
-     * @details Pauses the running timer, it will silently ignore the request if
-     * no timer is currently running.
+     * @brief Pause the stopwatch
+     * @details Pause the running timer, it will silently ignore the request if
+     *          no timer is running.
+     * @return true on success
      */
-    void pause();
+    static bool pause();
 
     /**
-     * @brief Starts the stopwatch
-     * @details Starts the timer, it will silently ignore the request if the
-     * timer is already running.
+     * @brief Start the stopwatch
+     * @details Start the timer, it will silently ignore the request if the
+     *          timer is already running.
+     * @return true on success
      */
-    void start();
+    static bool start();
 
     /**
-     * @brief Resets the stopwatch
-     * @details Resets all settings to their default values.
+     * @brief Resume the stopwatch
+     * @details Resume a timer from a given duration
      */
-    void reset();
+    static void resume(const millis_t duration);
 
     /**
-     * @brief Checks if the timer is running
-     * @details Returns true if the timer is currently running, false otherwise.
-     * @return bool
+     * @brief Reset the stopwatch
+     * @details Reset all settings to their default values.
      */
-    bool isRunning();
+    static void reset();
 
     /**
-     * @brief Checks if the timer is paused
-     * @details Returns true if the timer is currently paused, false otherwise.
-     * @return bool
+     * @brief Check if the timer is running
+     * @details Return true if the timer is currently running, false otherwise.
+     * @return true if stopwatch is running
      */
-    bool isPaused();
+    FORCE_INLINE static bool isRunning() { return state == RUNNING; }
 
     /**
-     * @brief Gets the running time
-     * @details Returns the total number of seconds the timer has been running.
-     * @return uint16_t
+     * @brief Check if the timer is paused
+     * @details Return true if the timer is currently paused, false otherwise.
+     * @return true if stopwatch is paused
      */
-    uint16_t duration();
+    FORCE_INLINE static bool isPaused() { return state == PAUSED; }
 
-    #if ENABLED(DEBUG_STOPWATCH)
+    /**
+     * @brief Get the running time
+     * @details Return the total number of seconds the timer has been running.
+     * @return the delta since starting the stopwatch
+     */
+    static millis_t duration();
+
+    #ifdef DEBUG_STOPWATCH
 
       /**
-       * @brief Prints a debug message
-       * @details Prints a simple debug message "Stopwatch::function"
+       * @brief Print a debug message
+       * @details Print a simple debug message "Stopwatch::function"
        */
       static void debug(const char func[]);
 
     #endif
 };
 
-#endif //STOPWATCH_H
+#endif // STOPWATCH_H

@@ -47,13 +47,4 @@
 #define SPINDLE_LASER_ENABLE_PIN 15   // Pin should have a pullup!
 #define SPINDLE_DIR_PIN          19
 
-//
-// Dagoma DiscoEasy default wiring is not the standard one
-//
-
-#define X_MAX_PIN 18
-#define Y_MAX_PIN 3
-#define Z_MIN_PIN 15
-
-// Other pins are the same than RAMPS. This include will not override values above.
 #include "pins_RAMPS.h"

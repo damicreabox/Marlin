@@ -866,9 +866,6 @@
   #define AVR_SS_PIN   16
 #endif
 
-#undef PRINTER_HEAD_EASY_CONSTANT_FAN_PIN
-#define PRINTER_HEAD_EASY_CONSTANT_FAN_PIN 7
-
 #ifndef SCK_PIN
   #define SCK_PIN  AVR_SCK_PIN
 #endif
@@ -881,5 +878,29 @@
 #ifndef SS_PIN
   #define SS_PIN   AVR_SS_PIN
 #endif
+
+// Dagoma remap
+#undef HEATER_1_PIN
+#define HEATER_1_PIN -1
+#undef PRINTER_HEAD_EASY_CONSTANT_FAN_PIN
+#define PRINTER_HEAD_EASY_CONSTANT_FAN_PIN 7
+#undef X_MAX_PIN
+#define X_MAX_PIN -1
+#undef X_MIN_PIN
+#define X_MIN_PIN 2
+#undef Y_MAX_PIN
+#define Y_MAX_PIN 3
+#undef Y_MIN_MIN
+#define Y_MIN_MIN -1
+#undef Z_MAX_PIN
+#define Z_MAX_PIN -1
+#undef Z_MIN_PIN
+#define Z_MIN_PIN 15
+#undef FILRUNOUT_PIN
+#define FILRUNOUT_PIN 19
+#undef SUMMON_PRINT_PAUSE_PIN
+#define SUMMON_PRINT_PAUSE_PIN 18
+#undef ONE_BUTTON_PIN
+#define ONE_BUTTON_PIN SUMMON_PRINT_PAUSE_PIN
 
 #endif // __PINS_H__
